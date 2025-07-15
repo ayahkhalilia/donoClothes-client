@@ -4,13 +4,55 @@
   <meta charset="UTF-8">
   <title>Clothes Donation</title>
   <link rel="stylesheet" href="style/style.css">
+  <script src="js/main.js"></script>
 </head>
 <body>
   <h1>Welcome to the Donation Site</h1>
+
   <nav>
     <a href="register.html">Register</a>
-    <a href="login.html">Login</a>
     <a href="donate.html">Donate Clothes</a>
   </nav>
+
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
+
+  <script>
+    document.getElementById('loginForm').onsubmit = async e => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const body = {
+        username: formData.get('username'),
+        password: formData.get('password')
+      };
+
+      try {
+        const res = await fetch('http://donoclothes-server.onrender.com/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert('Login successful!');
+           window.location.href = 'homepage.html';
+        } else {
+          alert('Login failed: ' + (data.error || 'Invalid credentials'));
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        alert('Something went wrong. Please try again.');
+      }
+    };
+  </script>
 </body>
 </html>

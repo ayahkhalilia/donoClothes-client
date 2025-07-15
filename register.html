@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Register</title>
   <link rel="stylesheet" href="style/style.css">
+  <script src="js/main.js"></script>
 </head>
 <body>
   <h2>Register</h2>
@@ -35,14 +36,18 @@
       const formData = new FormData(form);
 
       try {
-        const res = await fetch('https://donoclothes-server.onrender.com/auth/register', {
+        const res = await fetch('http://donoclothes-server.onrender.com/auth/register', {
           method: 'POST',
           body: formData
         });
 
         const data = await res.json();
-        alert(data.message || data.error);
-      } catch (err) {
+      if (res.ok) {
+        alert(data.message || 'Registered successfully!');
+        window.location.href = 'index.html';  
+      } else {
+        alert('Error: ' + (data.error || 'Something went wrong'));
+      }      } catch (err) {
         console.error('Registration error:', err);
         alert('Something went wrong. Please try again.');
       }
@@ -50,3 +55,4 @@
   </script>
 </body>
 </html>
+<!--https://donoclothes-server.onrender.com/auth/register-->
