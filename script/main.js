@@ -12,7 +12,7 @@ loginForm.addEventListener("submit", async (e) => {
   const password = formData.get("password");
 
   try {
-    const res = await fetch("http://donoclothes-server.onrender.com/auth/login", {
+    const res = await fetch("https://donoclothes-server.onrender.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -24,7 +24,7 @@ loginForm.addEventListener("submit", async (e) => {
     const token = data.token;
 
     // Get user info to determine role
-    const userRes = await fetch("http://donoclothes-server.onrender.com/auth/me", {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token }
     });
 
@@ -66,7 +66,7 @@ loginForm.addEventListener("submit", async (e) => {
       return;
     }
 
-    fetch("http://donoclothes-server.onrender.com/auth/me", {
+    fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => res.json())
@@ -76,7 +76,7 @@ loginForm.addEventListener("submit", async (e) => {
       })
       .catch((err) => console.error("Failed to fetch user info", err));
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    fetch("http://donoclothes-server.onrender.com/auth/me/photo", {
+    fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => {
@@ -95,14 +95,14 @@ loginForm.addEventListener("submit", async (e) => {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-    fetch("http://donoclothes-server.onrender.com/auth/worker/clothes-requests", {
+    fetch("https://donoclothes-server.onrender.com/auth/worker/clothes-requests", {
       headers: { Authorization: "Bearer " + token },
     })
       .then(res => res.json())
       .then(requests => renderClothesRequests(requests, token))
       .catch(err => console.error("Could not load clothes requests:", err));
 
-      fetch("http://donoclothes-server.onrender.com/auth/worker/donation-requests", {
+      fetch("https://donoclothes-server.onrender.com/auth/worker/donation-requests", {
   headers: { Authorization: "Bearer " + token },
 })
   .then((res) => res.json())
@@ -133,7 +133,7 @@ function renderClothesRequests(requests, token) {
 
     // Load recipient photo
     if (r.recipient && r.recipient._id) {
-      fetch(`http://donoclothes-server.onrender.com/auth/worker/clothes-requests/${r.recipient._id}/photo`, {
+      fetch(`https://donoclothes-server.onrender.com/auth/worker/clothes-requests/${r.recipient._id}/photo`, {
         headers: { Authorization: "Bearer " + token }
       })
         .then(res => {
@@ -195,7 +195,7 @@ document.getElementById("donationForm").addEventListener("submit", async (e) => 
   const formData = new FormData(form);
 
   try {
-    const res = await fetch("http://donoclothes-server.onrender.com/auth/donation-request", {
+    const res = await fetch("https://donoclothes-server.onrender.com/auth/donation-request", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + token
@@ -239,7 +239,7 @@ function renderDonationRequests(requests, token) {
 const img = document.createElement("img");
 img.style.cssText = "width:50px; height:50px; margin:2px; object-fit:cover; border-radius:4px;";
 
-fetch(`http://donoclothes-server.onrender.com/auth/worker/donation-requests/${r._id}/photo/${i}`, {
+fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-requests/${r._id}/photo/${i}`, {
   headers: { Authorization: "Bearer " + token }
 })
   .then(res => {
