@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    fetch("https://donoclothes-server.onrender.comauth/me", {
+    fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => res.json())
