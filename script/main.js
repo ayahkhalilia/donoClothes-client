@@ -1,31 +1,67 @@
-const API_BASE =
-  location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://donoclothes-server.onrender.com';
+document.addEventListener("DOMContentLoaded", () => {
+  const path = window.location.pathname;
 
-document.getElementById('loginForm').onsubmit = async e => {
-  e.preventDefault();
+  if (path.endsWith("index.html") || path === "/" || path === "/index") {
+    // Login page logic
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(loginForm);
+        const username = formData.get("username");
+        const password = formData.get("password");
 
-  const body = {
-    username: e.target.username.value,
-    password: e.target.password.value
-  };
+        try {
+          const res = await fetch("https://donoclothes-server.onrender.com/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
 
-  try {
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
+          if (!res.ok) throw new Error("Login failed");
 
-    const data = await res.json();
+          const data = await res.json();
+          const token = data.token;
 
-    if (res.ok) {
-      alert('Login successful!');
-      // window.location.href = 'dashboard.html';
-    } else {
-      alert('Login failed: ' + (data.error || 'Unknown error'));
+          window.location.href = `homepage.html?token=${encodeURIComponent(token)}`;
+        } catch (err) {
+          alert("Login error: " + err.message);
+          console.error(err);
+        }
+      });
     }
-  } catch (err) {
-    console.error('Login error:', err);
-    alert('Could not reach server. Is it running?');
   }
-};
+
+  if (path.endsWith("homepage.html")) {
+    // Homepage logic
+    const token = new URLSearchParams(window.location.search).get("token");
+
+    if (!token) {
+      alert("Missing token. Please log in first.");
+      return;
+    }
+
+    fetch("https://donoclothes-server.onrender.comauth/me", {
+      headers: { Authorization: "Bearer " + token },
+    })
+      .then((res) => res.json())
+      .then((user) => {
+        document.getElementById("welcomeMsg").textContent = `Welcome, ${user.username}`;
+        document.getElementById("userRole").textContent = `Role: ${user.role}`;
+      })
+      .catch((err) => console.error("Failed to fetch user info", err));
+
+    fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Photo not found");
+        return res.blob();
+      })
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        document.getElementById("userPhoto").src = url;
+      })
+      .catch((err) => console.warn("Could not load user photo:", err));
+  }
+});

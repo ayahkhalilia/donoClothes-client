@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DonoClothes</title>
   <link rel="stylesheet" href="style/style.css" />
-  <script src="js/main.js"></script>
+  <script src="script/main.js" defer></script>
 </head>
 <body>
   <header>
@@ -13,11 +13,16 @@
       <img src="logo-placeholder.png" alt="DonoClothes Logo">
       <span>DonoClothes</span>
     </div>
-    <div class="user-profile">
-      <span>Hi, Danial</span>
-      <img src="user-placeholder.jpg" alt="User Photo" />
-    </div>
+<section id="userInfo">
+    <h2 id="welcomeMsg">Welcome, [User]</h2>
+    <img
+      id="userPhoto"
+      alt="User Photo"
+      style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #333; display: block;"
+    />  </section>
   </header>
+
+
 
   <main>
     <!-- Left Side: Branch Info -->
@@ -28,7 +33,7 @@
         <p><strong>📍 Location</strong></p>
         <p><strong>📞 03-5576000</strong></p>
         <p><strong>💬 WhatsApp</strong></p>
-        <p>📧 OpenHeart.Donation@gmail.com</p>
+        <p>📧 OpenHeart.Donation@gmail.com</p><!--i need to change this later-->
       </div>
       <div class="quantity">
         <p>Quantity in storage: <strong>538/1200</strong></p>
@@ -60,5 +65,6 @@
       </ul>
     </section>
   </main>
+
 </body>
 </html>

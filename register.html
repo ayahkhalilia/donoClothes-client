@@ -1,58 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Register</title>
-  <link rel="stylesheet" href="style/style.css">
-  <script src="js/main.js"></script>
+  <title>Register Test</title>
 </head>
 <body>
-  <h2>Register</h2>
-
+  <h2>Test Registration</h2>
   <form id="registerForm" enctype="multipart/form-data">
-    <input type="text" name="username" placeholder="Username" required />
-    <input type="password" name="password" placeholder="Password" required />
-
-    <select name="role" required>
-      <option value="" disabled selected>Select Role</option>
-      <option value="donator">Donator</option>
-      <option value="recipient">Recipient</option>
-      <option value="worker">Worker</option>
-    </select>
-
-    <input type="text" name="phonenumber" placeholder="Phone Number" required />
-    <input type="number" name="age" placeholder="Age" required />
-    <input type="number" name="kids" placeholder="Number of Kids" required />
-    <input type="email" name="email" placeholder="Email" required />
-    <input type="file" name="photo" accept="image/*" required />
-
+    <input type="text" name="username" placeholder="Username" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <input type="text" name="role" value="donator" readonly><br>
+    <input type="text" name="phonenumber" placeholder="Phone Number" required><br>
+    <input type="number" name="age" placeholder="Age" required><br>
+    <input type="number" name="kids" placeholder="Number of Kids" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="file" name="photo" accept="image/*" required><br>
     <button type="submit">Register</button>
   </form>
 
   <script>
     document.getElementById('registerForm').onsubmit = async e => {
       e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
+      const formData = new FormData(e.target);
 
-      try {
-        const res = await fetch('https://donoclothes-server.onrender.com/auth/register', {
-          method: 'POST',
-          body: formData
-        });
+      const res = await fetch('https://donoclothes-server.onrender.com/auth/register', {
+        method: 'POST',
+        body: formData
+      });
 
-        const data = await res.json();
+      const data = await res.json();
       if (res.ok) {
-        alert(data.message || 'Registered successfully!');
-        window.location.href = 'index.html';  
+        alert('Registered successfully!');
+        console.log('User created:', data);
       } else {
-        alert('Error: ' + (data.error || 'Something went wrong'));
-      }      } catch (err) {
-        console.error('Registration error:', err);
-        alert('Something went wrong. Please try again.');
+        alert('Failed: ' + (data.error || 'Unknown error'));
       }
     };
   </script>
 </body>
 </html>
-<!--https://donoclothes-server.onrender.com/auth/register-->
