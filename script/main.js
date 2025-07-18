@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const path = window.location.pathname;
+  const path = window.location.pathname.toLowerCase();
 
   if (path.endsWith("index.html") || path === "/" || path === "/index") {
     // Login page logic
@@ -110,7 +110,7 @@ loginForm.addEventListener("submit", async (e) => {
       .catch((err) => console.error("Could not load donation requests:", err));
 
   }
-   if (path.endsWith("clothesReqDetails.html")) {
+   if (path.endsWith("clothesreqdetails.html")) {
     runClothesRequestDetailsLogic();
   }
 });
