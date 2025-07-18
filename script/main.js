@@ -130,6 +130,7 @@ async function runClothesRequestDetailsLogic() {
 
     if (!userRes.ok) throw new Error("Failed to fetch user info");
 
+    
     const user = await userRes.json();
     const welcomeEl = document.getElementById("welcomeMsg");
     if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
