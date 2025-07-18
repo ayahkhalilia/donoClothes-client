@@ -126,6 +126,7 @@ async function runClothesRequestDetailsLogic() {
   // Load user info
   try {
     const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+      method: "GET",
       headers: { Authorization: "Bearer " + token },
     });
 
