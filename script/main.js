@@ -109,7 +109,8 @@ loginForm.addEventListener("submit", async (e) => {
       .then((requests) => renderDonationRequests(requests, token))
       .catch((err) => console.error("Could not load donation requests:", err));
 
-  } else if (path.endsWith("clothesReqDetails.html")) {
+  }
+   if (path.endsWith("clothesReqDetails.html")) {
     runClothesRequestDetailsLogic();
   }
 });
@@ -130,7 +131,7 @@ async function runClothesRequestDetailsLogic() {
 
     if (!userRes.ok) throw new Error("Failed to fetch user info");
 
-    
+
     const user = await userRes.json();
     const welcomeEl = document.getElementById("welcomeMsg");
     if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
