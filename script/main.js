@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const path = window.location.pathname.toLowerCase();
+  const path = window.location.pathname;
 
   if (path.endsWith("index.html") || path === "/" || path === "/index") {
     // Login page logic
@@ -211,7 +211,7 @@ function renderClothesRequests(requests, token) {
     li.appendChild(span);
     list.appendChild(li);
     li.addEventListener("click",()=>{
-        window.location.href=`clothesReqDetails.html?token=${encodeURIComponent(token)}&id=${r._id}`;
+        window.location.href=`clothesreqdetails.html?token=${encodeURIComponent(token)}&id=${r._id}`;
     });    
   });
 }
