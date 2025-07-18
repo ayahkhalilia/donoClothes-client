@@ -110,7 +110,7 @@ loginForm.addEventListener("submit", async (e) => {
       .catch((err) => console.error("Could not load donation requests:", err));
 
   }
-   if (path.endsWith("clothesReqDetails.html")) {
+   if (path.toLowerCase().endsWith("clothesreqdetails.html")) {
     runClothesRequestDetailsLogic();
   }
 });
