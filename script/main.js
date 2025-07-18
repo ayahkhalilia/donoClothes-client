@@ -102,17 +102,59 @@ loginForm.addEventListener("submit", async (e) => {
       .then(requests => renderClothesRequests(requests, token))
       .catch(err => console.error("Could not load clothes requests:", err));
 
-      fetch("https://donoclothes-server.onrender.com/auth/worker/donation-requests", {
-  headers: { Authorization: "Bearer " + token },
-})
-  .then((res) => res.json())
-  .then((requests) => renderDonationRequests(requests, token))
-  .catch((err) => console.error("Could not load donation requests:", err));
+    fetch("https://donoclothes-server.onrender.com/auth/worker/donation-requests", {
+      headers: { Authorization: "Bearer " + token },
+    })
+      .then((res) => res.json())
+      .then((requests) => renderDonationRequests(requests, token))
+      .catch((err) => console.error("Could not load donation requests:", err));
 
+  } else if (path.endsWith("clothesReqDetails.html")) {
+    runClothesRequestDetailsLogic();
   }
 });
 
+async function runClothesRequestDetailsLogic() {
+  const token = new URLSearchParams(window.location.search).get("token");
+  if (!token) {
+    alert("Missing token. Please log in first.");
+    window.location.href = "index.html";
+    return;
+  }
 
+  // Load user info
+  try {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+    const user = await userRes.json();
+    const welcomeEl = document.getElementById("welcomeMsg");
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
+  } catch (err) {
+    console.error("Error fetching user info:", err);
+  }
+
+  // Load user photo
+  try {
+    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (photoRes.ok) {
+      const blob = await photoRes.blob();
+      const imgEl = document.getElementById("userPhoto");
+
+      if (imgEl) imgEl.src = URL.createObjectURL(blob);
+    } else {
+      console.warn("User photo not found");
+    }
+  } catch (err) {
+    console.warn("Failed to load user photo:", err);
+  }
+}
 
 
 
@@ -165,18 +207,11 @@ function renderClothesRequests(requests, token) {
     li.appendChild(img);
     li.appendChild(span);
     list.appendChild(li);
+    li.addEventListener("click",()=>{
+        window.location.href=`clothesReqDetails.html?token=${encodeURIComponent(token)}&id=${r._id}`;
+    });    
   });
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -274,3 +309,55 @@ imgContainer.appendChild(img);
   });
 }
 
+
+
+//// clothesReqDetails.html js
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = new URLSearchParams(window.location.search).get("token");
+  console.log(token);
+  if (!token) {
+    alert("Missing token. Please log in first.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  // Load user info (name, role)
+  try {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+    console.log("User response status:", userRes.status);
+
+    if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+    const user = await userRes.json();
+    console.log("user:", user);
+    const welcomeEl = document.getElementById("welcomeMsg");
+    const roleEl = document.getElementById("userRole");
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
+    if (roleEl) roleEl.textContent = `Role: ${user.role}`;
+  } catch (err) {
+    console.error("Error fetching user info:", err);
+  }
+
+  // Load user profile photo
+  try {
+    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    });
+    console.log("Photo status:", photoRes.status);
+
+    if (photoRes.ok) {
+      const blob = await photoRes.blob();
+      const imgEl = document.getElementById("userPhoto");
+
+      if (imgEl) imgEl.src = URL.createObjectURL(blob);
+    } else {
+      console.warn("User photo not found");
+    }
+  } catch (err) {
+    console.warn("Failed to load user photo:", err);
+  }
+
+  // You can add logic here to load the selected clothes request too
+});
