@@ -116,7 +116,9 @@ loginForm.addEventListener("submit", async (e) => {
 });
 
 async function runClothesRequestDetailsLogic() {
-  const token = new URLSearchParams(window.location.search).get("token");
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+  const requestId = params.get("id");
   if (!token) {
     alert("Missing token. Please log in first.");
     window.location.href = "index.html";
@@ -156,6 +158,58 @@ async function runClothesRequestDetailsLogic() {
     }
   } catch (err) {
     console.warn("Failed to load user photo:", err);
+  }
+  try {
+    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/clothes-request-details/${requestId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch request");
+
+    const request = await res.json();
+
+    const classificationDiv = document.getElementById("classification");
+    classificationDiv.innerHTML = `
+      <h4>Request Info</h4>
+      <p><strong>Recipient:</strong> ${request.recipient?.username || 'Unknown'}</p>
+      <p><strong>Gender:</strong> ${request.gender}</p>
+      <p><strong>Age:</strong> ${request.age}</p>
+      <p><strong>Type:</strong> ${request.type}</p>
+      <p><strong>Size:</strong> ${request.size}</p>
+      <p><strong>Color:</strong> ${request.color}</p>
+      <p><strong>Classification:</strong> ${request.classification}</p>
+    `;
+    const recipientId = request.recipient?._id;
+    if (!recipientId) throw new Error("Recipient not found in request");
+
+    const userRes = await fetch(`https://donoclothes-server.onrender.com/auth/worker/user/${recipientId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!userRes.ok) throw new Error("Failed to fetch recipient details");
+
+    const recipient = await userRes.json();
+
+    // 4. Update UI (e.g., profile card section) with recipient info
+    document.querySelector(".profile-card").innerHTML = `
+      <img src="${recipient.photo || 'https://via.placeholder.com/100'}" alt="User" />
+      <h3>${recipient.username}</h3>
+      <p>${recipient.city || ''}</p>
+      <div class="info">
+        <p>📞 Phone: ${recipient.phonenumber}</p>
+        <p>✉️ Email: ${recipient.email || 'N/A'}</p>
+        <p>Age: ${recipient.age}</p>
+        <p>Address: ${recipient.address}</p>
+      </div>
+      <div class="request-history">🔄 Requests History</div>
+    `;
+  } catch (err) {
+    console.error("Error loading request:", err);
+    alert("Could not load request details");
   }
 }
 
