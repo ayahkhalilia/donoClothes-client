@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DonoClothes - Donation Request</title>
+  <link rel="stylesheet" href="style/style.css" />
+  <script defer src="script/main.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img src="logo.png" alt="DonoClothes Logo" />
+      <span>DonoClothes</span>
+    </div>
+    <div class="header-right">
+      <span id="username">Hi, [Username]</span>
+      <img id="userPhoto" alt="User Photo" class="profile-pic" />
+    </div>
+  </header>
+
+  <main class="donation-details-layout">
+    <div>
+    <div class="donator-card">
+      <img id="recipientPhoto" alt="Recipient Photo" class="recipient-pic" />
+      <h3 id="donator"></h3>
+    </div>
+      <button class="accept-btn">Accept</button>
+      <button class="decline-btn">Decline</button>
+    </div>
+
+    <section class="request-details">
+      <h3>Request Details</h3>
+      <div id="requestDetails"></div>
+    </section>
+
+    <section class="pickup-schedule">
+      <h3>Request to collect the donation from house on:</h3>
+      <p id="pickupDate">20/3/2024</p>
+      <p id="pickupTime">12:00pm ~ 14:00pm</p>
+      <button>Check the date</button>
+    </section>
+  </main>
+</body>
+</html>

@@ -113,6 +113,10 @@ loginForm.addEventListener("submit", async (e) => {
    if (path.endsWith("clothesreqdetails.html")) {
     runClothesRequestDetailsLogic();
   }
+  if (path.endsWith("donationreqdetails.html")) {
+    runDonationRequestDetailsLogic();
+  }
+
 });
 
 async function runClothesRequestDetailsLogic() {
@@ -203,15 +207,112 @@ async function runClothesRequestDetailsLogic() {
         <p>📞 Phone: ${recipient.phonenumber}</p>
         <p>✉️ Email: ${recipient.email || 'N/A'}</p>
         <p>Age: ${recipient.age}</p>
+        <p>kids: ${recipient.kids}</p>
+        <p>Normal clothes request for: ${request.gender},age()</p>
         <p>Address: ${recipient.address}</p>
       </div>
       <div class="request-history">🔄 Requests History</div>
-    `;
+    `;////// i need to check "what the normal clothes request for:" is????
   } catch (err) {
     console.error("Error loading request:", err);
     alert("Could not load request details");
   }
 }
+
+
+
+async function runDonationRequestDetailsLogic() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+  const requestId = params.get("id");
+
+  if (!token || !requestId) {
+    alert("Missing token or request ID");
+    window.location.href = "index.html";
+    return;
+  }
+
+  try {
+    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request-details/${requestId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch donation request");
+
+    const request = await res.json();
+
+    const detailsDiv = document.getElementById("requestDetails");
+    detailsDiv.innerHTML = `
+      <p><strong>Donator:</strong> ${request.donator.username}</p>
+      <p><strong>Gender:</strong> ${request.gender}</p>
+      <p><strong>Age:</strong> ${request.age}</p>
+      <p><strong>Type:</strong> ${request.type}</p>
+      <p><strong>Size:</strong> ${request.size}</p>
+      <p><strong>Color:</strong> ${request.color}</p>
+      <p><strong>Season:</strong> ${request.classification}</p>
+    `;
+    const donatorId=request.donator._id;
+    if(!donatorId)throw new error("donator not found");
+    const donerRes=await fetch(`https://donoclothes-server.onrender.com/auth/worker/user/${donatorId}`,{
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    if (!donerRes.ok) throw new error("failed to fetch donator details");
+    const donator=await donerRes.json();
+    document.querySelector(".donator-card").innerHTML=`
+       <img src="${donator.photo || ''}" alt="donator"/>
+       <div class="info">
+       <h3>${donator.username}</h3>
+       <p>${donator.phonenumber}</p>
+       <p>Email: ${donator.email}</p> 
+       </div>
+    `;
+  } catch (err) {
+    console.error("Error loading donation request details:", err);
+    alert("Could not load request details");
+  }
+
+  //this is for the reject and accept button
+  document.querySelector(".accept-btn").addEventListener("click", async () => {
+  try {
+    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/${requestId}/accept`, {
+      method: "PUT",
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    const data = await res.json();
+    alert(data.message);
+    window.location.href = "homepage.html?token=" + encodeURIComponent(token);
+  } catch (err) {
+    alert("Error accepting request: " + err.message);
+  }
+});
+
+document.querySelector(".decline-btn").addEventListener("click", async () => {
+  try {
+    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/${requestId}/reject`, {
+      method: "PUT",
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    const data = await res.json();
+    alert(data.message);
+    window.location.href = "homepage.html?token=" + encodeURIComponent(token);
+  } catch (err) {
+    alert("Error rejecting request: " + err.message);
+  }
+});
+
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -363,6 +464,10 @@ imgContainer.appendChild(img);
     li.appendChild(imgContainer);
     li.appendChild(span);
     list.appendChild(li);
+    li.addEventListener("click", () => {
+      window.location.href = `donationreqdetails.html?token=${encodeURIComponent(token)}&id=${r._id}`;
+    });
+
   });
 }
 
