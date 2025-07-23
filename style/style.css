@@ -217,7 +217,7 @@ main {
       margin-top: 10px;
     }
 
-    .storage-box {
+    #storage-box {
       background-color: white;
       border-radius: 15px;
       flex: 1;
@@ -228,7 +228,19 @@ main {
       padding: 20px;
     }
 
-    .btn {
+    #checkbtn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #418be0;
+      color: white;
+      text-align: center;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+    }
+
+    #savebtn{
       display: inline-block;
       margin-top: 15px;
       padding: 10px 20px;
@@ -263,4 +275,9 @@ main {
 .decline-btn{
   width: 80px;
   height: 30px;
+}
+
+#onwait{
+  color: red;
+  font-size: 14px;
 }
