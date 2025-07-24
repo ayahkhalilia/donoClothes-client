@@ -125,6 +125,9 @@ loginForm.addEventListener("submit", async (e) => {
   if (path.endsWith("donationreqdetails.html")) {
     runDonationRequestDetailsLogic();
   }
+  if (path.endsWith("storage.html")) {
+    runStoragePageLogic();
+  }
 
 });
 
@@ -395,11 +398,42 @@ async function runDonationRequestDetailsLogic() {
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token");
   const requestId = params.get("id");
-
+  //const 
   if (!token || !requestId) {
     alert("Missing token or request ID");
     window.location.href = "index.html";
     return;
+  }
+
+    try {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+    const user = await userRes.json();
+    const welcomeEl = document.getElementById("welcomeMsg");
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
+  } catch (err) {
+    console.error("Error fetching user info:", err);
+  }
+
+  // Load user photo
+  try {
+    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (photoRes.ok) {
+      const blob = await photoRes.blob();
+      const imgEl = document.getElementById("userPhoto");
+      if (imgEl) imgEl.src = URL.createObjectURL(blob);
+    } else {
+      console.warn("User photo not found");
+    }
+  } catch (err) {
+    console.warn("Failed to load user photo:", err);
   }
 
   try {
@@ -535,7 +569,6 @@ function renderBranch(branch,token){
           <!-- You can dynamically add shortages if you have them in the DB -->
         </ul>
       </div>
-      <button>Check storage</button>
     `;
 
 fetch("https://donoclothes-server.onrender.com/auth/worker/get-branch-photo", {
@@ -557,9 +590,106 @@ fetch("https://donoclothes-server.onrender.com/auth/worker/get-branch-photo", {
   .catch((err) => {
     console.warn("No branch photo:", err);
   });
-
- 
 }
+
+
+
+
+async function runStoragePageLogic(){
+  const params= new URLSearchParams(window.location.search);
+  const token=params.get("token");
+  //const 
+  if(!token){
+    alert("Missing token. Please log in first.");
+    window.location.href="index.html";
+    return;
+  }
+
+    try {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+    const user = await userRes.json();
+    const welcomeEl = document.getElementById("welcomeMsg");
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
+  } catch (err) {
+    console.error("Error fetching user info:", err);
+  }
+
+  // Load user photo
+  try {
+    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (photoRes.ok) {
+      const blob = await photoRes.blob();
+      const imgEl = document.getElementById("userPhoto");
+      if (imgEl) imgEl.src = URL.createObjectURL(blob);
+    } else {
+      console.warn("User photo not found");
+    }
+  } catch (err) {
+    console.warn("Failed to load user photo:", err);
+  }
+
+
+
+    try {
+    const res = await fetch('https://donoclothes-server.onrender.com/auth/worker/get-all-storage-items',{
+      headers: { Authorization: "Bearer " + token },
+    });
+    const items = await res.json();
+
+    const container = document.createElement('div');
+    container.className = 'storage-list';
+
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'storage-card';
+
+      card.innerHTML = `
+        <div class="photo-gallery">
+          ${item.photos.map(photo => `<img src="${photo}" alt="Item photo" class="item-photo"/>`).join('')}
+        </div>
+        <p><strong>Type:</strong> ${item.type}</p>
+        <p><strong>Gender:</strong> ${item.gender}</p>
+        <p><strong>Size:</strong> ${item.size}</p>
+        <p><strong>Color:</strong> ${item.color}</p>
+        <p><strong>Season:</strong> ${item.classification}</p>
+        <p><strong>Status:</strong> ${item.status}</p>
+        <div class="actions">
+          <button class="edit-btn" data-id="${item._id}">Edit</button>
+          <button class="delete-btn" data-id="${item._id}">Delete</button>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+
+    document.body.appendChild(container);
+  } catch (err) {
+    console.error("Failed to fetch storage items:", err);
+  }
+
+
+
+}
+
+
+
+
+document.querySelector("#checkStorageBtn").addEventListener("click", async () => {
+  const token = new URLSearchParams(window.location.search).get("token");
+  if (!token) {
+    alert("You're not logged in");
+    return;
+  }
+  window.location.href = `storage.html?token=${encodeURIComponent(token)}`;
+});
 
 
 

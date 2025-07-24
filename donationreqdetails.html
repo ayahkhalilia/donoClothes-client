@@ -8,14 +8,19 @@
 </head>
 <body>
   <header>
-    <div class="header-left">
-      <img src="logo.png" alt="DonoClothes Logo" />
+    <div class="logo">
+      <img src="logo-placeholder.png" alt="DonoClothes Logo">
       <span>DonoClothes</span>
     </div>
-    <div class="header-right">
-      <span id="username">Hi, [Username]</span>
-      <img id="userPhoto" alt="User Photo" class="profile-pic" />
-    </div>
+    <section id="userInfo">
+<div id="userDropdown" class="dropdown">
+  <h2 id="welcomeMsg">Welcome, [User] ▼</h2>
+  <div id="dropdownMenu" class="dropdown-menu hidden">
+    <button id="logoutBtn">Logout</button>
+  </div>
+</div>
+      <img id="userPhoto" alt="User Photo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #333; display: block;" /> 
+    </section>
   </header>
 
   <main class="donation-details-layout">
