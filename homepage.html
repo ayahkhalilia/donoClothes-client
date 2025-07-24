@@ -13,29 +13,36 @@
       <img src="logo-placeholder.png" alt="DonoClothes Logo">
       <span>DonoClothes</span>
     </div>
-<section id="userInfo">
-    <h2 id="welcomeMsg">Welcome, [User]</h2>
-    <img
-      id="userPhoto"
-      alt="User Photo"
-      style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #333; display: block;"
-    />  </section>
+    <section id="userInfo">
+<div id="userDropdown" class="dropdown">
+  <h2 id="welcomeMsg">Welcome, [User] ▼</h2>
+  <div id="dropdownMenu" class="dropdown-menu hidden">
+    <button id="logoutBtn">Logout</button>
+  </div>
+</div>
+      <img id="userPhoto" alt="User Photo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #333; display: block;" /> 
+    </section>
   </header>
 
 
 
   <main>
     <!-- Left Side: Branch Info -->
-    <section class="branch-info">
-      <h3>Haifa Branch</h3>
-      <p>Street HaAsif 17</p>
+    <section id="branch-info">
+        <img
+    id="branchPhoto"
+    alt="Branch Photo"
+    style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover;"
+  />
+      <!--<h3>Haifa Branch</h3>
+      <p>Street HaAsif 17</p>-->
       <div class="contact">
-        <p><strong>📍 Location</strong></p>
+        <!--<p><strong>📍 Location</strong></p>
         <p><strong>📞 03-5576000</strong></p>
         <p><strong>💬 WhatsApp</strong></p>
-        <p>📧 OpenHeart.Donation@gmail.com</p><!--i need to change this later-->
+        <p>📧Email OpenHeart.Donation@gmail.com</p>i need to change this later-->
       </div>
-      <div class="quantity">
+      <!--<div class="quantity">
         <p>Quantity in storage: <strong>538/1200</strong></p>
       </div>
       <div class="shortage">
@@ -44,7 +51,7 @@
 
         </ul>
       </div>
-      <button>Check storage</button>
+      <button>Check storage</button>-->
     </section>
 
     <!-- Middle Panel: Donations Requests -->

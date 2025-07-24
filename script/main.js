@@ -109,6 +109,15 @@ loginForm.addEventListener("submit", async (e) => {
       .then((requests) => renderDonationRequests(requests, token))
       .catch((err) => console.error("Could not load donation requests:", err));
 
+    // Fetch branch info
+    fetch("https://donoclothes-server.onrender.com/auth/worker/get-branch", {
+      headers: { Authorization: "Bearer " + token },
+    })
+      .then(res => res.json())
+      .then((branch)=> renderBranch(branch,token))
+      .catch(err => console.error("Could not load branch info:", err));
+
+
   }
    if (path.endsWith("clothesreqdetails.html")) {
     runClothesRequestDetailsLogic();
@@ -118,6 +127,45 @@ loginForm.addEventListener("submit", async (e) => {
   }
 
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const welcomeMsg = document.getElementById("welcomeMsg");
+  const dropdownMenu = document.getElementById("dropdownMenu");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+
+  if (welcomeMsg && dropdownMenu && logoutBtn) {
+    welcomeMsg.addEventListener("click", () => {
+      dropdownMenu.classList.toggle("hidden");
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        const res = await fetch("https://donoclothes-server.onrender.com/auth/logout", {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert(data.message || "Logged out successfully.");
+        } else {
+          alert(data.message || "Logout failed. Please try again.");
+        }
+      } catch (err) {
+        alert("Network error. Logout failed.");
+      }
+      window.authToken = null;
+      window.location.href = "index.html";
+    });
+  }
+});
+
+
+
 
 async function runClothesRequestDetailsLogic() {
   const params = new URLSearchParams(window.location.search);
@@ -467,8 +515,51 @@ document.querySelector(".decline-btn").addEventListener("click", async () => {
 
 
 
+function renderBranch(branch,token){
+  const branchinfo=document.querySelector('#branch-info .contact');
+  branchinfo.innerHTML= `
+      <h3>${branch.name}</h3>
+      <p>${branch.address}</p>
+      <div class="contact">
+        <p><strong>📍 Location</strong></p>
+        <p><strong>📞 ${branch.phonenumber}</strong></p>
+        <p><strong>💬 WhatsApp</strong></p>
+        <p>📧 ${branch.email}</p>
+      </div>
+      <div class="quantity">
+        <p>Quantity in storage: <strong>538/1200</strong></p>
+      </div>
+      <div class="shortage">
+        <p><strong>Recent shortage in storage:</strong></p>
+        <ul>
+          <!-- You can dynamically add shortages if you have them in the DB -->
+        </ul>
+      </div>
+      <button>Check storage</button>
+    `;
 
+fetch("https://donoclothes-server.onrender.com/auth/worker/get-branch-photo", {
+  headers: {
+    Authorization: "Bearer " + token,
+  },
+})
+  .then((res) => {
+    console.log(token);
+    console.log(branch);
+    console.log("Photo exists:", !!branch?.photo?.data);
+    if (!res.ok) throw new Error("No photo");
+    return res.blob();
+  })
+  .then((blob) => {
+    const url = URL.createObjectURL(blob);
+    document.querySelector("#branchPhoto").src = url;
+  })
+  .catch((err) => {
+    console.warn("No branch photo:", err);
+  });
 
+ 
+}
 
 
 
