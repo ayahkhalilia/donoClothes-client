@@ -598,7 +598,6 @@ fetch("https://donoclothes-server.onrender.com/auth/worker/get-branch-photo", {
 async function runStoragePageLogic(){
   const params= new URLSearchParams(window.location.search);
   const token=params.get("token");
-  //const 
   if(!token){
     alert("Missing token. Please log in first.");
     window.location.href="index.html";
@@ -619,7 +618,6 @@ async function runStoragePageLogic(){
     console.error("Error fetching user info:", err);
   }
 
-  // Load user photo
   try {
     const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
@@ -655,22 +653,89 @@ async function runStoragePageLogic(){
         <div class="photo-gallery">
           ${item.photos.map(photo => `<img src="${photo}" alt="Item photo" class="item-photo"/>`).join('')}
         </div>
-        <p><strong>Type:</strong> ${item.type}</p>
-        <p><strong>Gender:</strong> ${item.gender}</p>
-        <p><strong>Size:</strong> ${item.size}</p>
-        <p><strong>Color:</strong> ${item.color}</p>
-        <p><strong>Season:</strong> ${item.classification}</p>
-        <p><strong>Status:</strong> ${item.status}</p>
-        <div class="actions">
-          <button class="edit-btn" data-id="${item._id}">Edit</button>
-          <button class="delete-btn" data-id="${item._id}">Delete</button>
-        </div>
+    <div class="editable-fields">
+      <label>Type: <input type="text" value="${item.type}" disabled class="editable-input" data-field="type" /></label>
+      <label>Gender: <input type="text" value="${item.gender}" disabled class="editable-input" data-field="gender" /></label>
+      <label>Size: <input type="text" value="${item.size}" disabled class="editable-input" data-field="size" /></label>
+      <label>Color: <input type="text" value="${item.color}" disabled class="editable-input" data-field="color" /></label>
+      <label>Season: <input type="text" value="${item.classification}" disabled class="editable-input" data-field="classification" /></label>
+      <label>Status: <input type="text" value="${item.status}" disabled class="editable-input" data-field="status" /></label>
+    </div>
+    <div class="actions">
+      <button class="edit-btn" data-id="${item._id}">Edit</button>
+      <button class="save-btn hidden" data-id="${item._id}">Save</button>
+      <button class="delete-btn" data-id="${item._id}">Delete</button>
+    </div>
       `;
 
+    card.querySelector('.edit-btn').addEventListener('click', () => {
+    card.querySelectorAll('.editable-input').forEach(input => input.disabled = false);
+    card.querySelector('.save-btn').classList.remove('hidden');
+  });
+
+
+  card.querySelector('.save-btn').addEventListener('click', async () => {
+    const updatedData = {};
+    card.querySelectorAll('.editable-input').forEach(input => {
+      const field = input.dataset.field;
+      updatedData[field] = input.value;
+      input.disabled = true;
+    });
+      
+        try {
+          const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/update-storage-item/${item._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + token,
+            },
+            body: JSON.stringify(updatedData),
+          });
+
+          if (!res.ok) throw new Error('Update failed');
+          card.querySelector('.save-btn').classList.add('hidden');
+          alert('Item updated successfully');          
+        } catch (err) {
+          console.error(err);
+          alert('Failed to update item');
+        }
+  });
+
+  card.querySelector('.delete-btn').addEventListener('click', async () => {
+    if (!confirm("Are you sure you want to delete this item?")) return;
+
+    try {
+      const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/delete-storage-item/${item._id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+
+      if (!res.ok) throw new Error("Delete failed");
+
+      card.remove();
+      alert("Item deleted");
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete item");
+    }
+  });
       container.appendChild(card);
     });
 
     document.body.appendChild(container);
+
+
+    const addBtn = document.getElementById("addItemBtn");
+    if (addBtn) {
+      addBtn.addEventListener("click", () => {
+        window.location.href = `additemform.html?token=${token}`;
+      });
+    }
+
+
+
   } catch (err) {
     console.error("Failed to fetch storage items:", err);
   }

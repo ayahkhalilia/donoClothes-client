@@ -399,3 +399,23 @@ main {
 .delete-btn:hover {
   background-color: #d32f2f;
 }
+
+
+.editable-fields {
+  margin-bottom: 10px;
+}
+
+.editable-fields label {
+  display: block;
+  margin: 5px 0;
+}
+
+.editable-input {
+  margin-left: 5px;
+  padding: 3px;
+  width: 100px;
+}
+
+.hidden {
+  display: none;
+}
