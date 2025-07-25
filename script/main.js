@@ -128,7 +128,9 @@ loginForm.addEventListener("submit", async (e) => {
   if (path.endsWith("storage.html")) {
     runStoragePageLogic();
   }
-
+  if (path.endsWith("additemtostorageform.html")) {
+    runAddItemToStorageLogic();
+  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -730,7 +732,7 @@ async function runStoragePageLogic(){
     const addBtn = document.getElementById("addItemBtn");
     if (addBtn) {
       addBtn.addEventListener("click", () => {
-        window.location.href = `additemform.html?token=${token}`;
+        window.location.href = `additemtostorageform.html?token=${token}`;
       });
     }
 
@@ -928,7 +930,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Load user info (name, role)
   try {
     const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
@@ -947,7 +948,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Error fetching user info:", err);
   }
 
-  // Load user profile photo
   try {
     const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
@@ -966,5 +966,72 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.warn("Failed to load user photo:", err);
   }
 
-  // You can add logic here to load the selected clothes request too
 });
+
+async function runAddItemToStorageLogic(){
+    const params= new URLSearchParams(window.location.search);
+  const token=params.get("token");
+  if(!token){
+    alert("Missing token. Please log in first.");
+    window.location.href="index.html";
+    return;
+  }
+
+    try {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+    const user = await userRes.json();
+    const welcomeEl = document.getElementById("welcomeMsg");
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
+  } catch (err) {
+    console.error("Error fetching user info:", err);
+  }
+
+  try {
+    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (photoRes.ok) {
+      const blob = await photoRes.blob();
+      const imgEl = document.getElementById("userPhoto");
+      if (imgEl) imgEl.src = URL.createObjectURL(blob);
+    } else {
+      console.warn("User photo not found");
+    }
+  } catch (err) {
+    console.warn("Failed to load user photo:", err);
+  }
+
+
+  const form = document.getElementById("addStorageForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+   const formData = new FormData(form);
+
+    try {
+      const res = await fetch("https://donoclothes-server.onrender.com/auth/worker/add-item-to-storage", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Failed to add item");
+
+      alert("Item added successfully!");
+      window.location.href = `storage.html?token=${token}`;
+    } catch (err) {
+      console.error("Error adding item:", err);
+      alert("Failed to add item to storage.");
+    }
+  });
+
+}

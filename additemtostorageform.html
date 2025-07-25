@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DonoClothes - Add to Storage</title>
+  <link rel="stylesheet" href="style/style.css" />
+  <script src="script/main.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="logo-placeholder.png" alt="DonoClothes Logo">
+      <span>DonoClothes</span>
+    </div>
+    <section id="userInfo">
+      <div id="userDropdown" class="dropdown">
+        <h2 id="welcomeMsg">Welcome, [User] ▼</h2>
+        <div id="dropdownMenu" class="dropdown-menu hidden">
+          <button id="logoutBtn">Logout</button>
+        </div>
+      </div>
+      <img id="userPhoto" alt="User Photo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #333;" /> 
+    </section>
+  </header>
+
+  <main class="add-storage-main">
+    <h2 class="add-storage-title">Add Item to Storage</h2>
+    <form id="addStorageForm"  enctype="multipart/form-data">
+      <label class="add-storage-label">Gender:
+        <select name="gender" required class="add-storage-input">
+          <option value="">Select</option>
+          <option value="boys">Boys</option>
+          <option value="girls">Girls</option>
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+        </select>
+      </label>
+
+      <label class="add-storage-label">Age:
+        <input type="number" name="age" required class="add-storage-input" />
+      </label>
+
+      <label class="add-storage-label">Type:
+        <select name="type" required class="add-storage-input">
+          <option value="">Select</option>
+          <option value="dresses">Dresses</option>
+          <option value="pants">Pants</option>
+          <option value="shirts">Shirts</option>
+          <option value="jackets">Jackets</option>
+          <option value="shoes">Shoes</option>
+        </select>
+      </label>
+
+      <label class="add-storage-label">Size:
+        <input type="text" name="size" required class="add-storage-input" />
+      </label>
+
+      <label class="add-storage-label">Color:
+        <input type="text" name="color" required class="add-storage-input" />
+      </label>
+
+      <label class="add-storage-label">Classification:
+        <select name="classification" required class="add-storage-input">
+          <option value="">Select</option>
+          <option value="summer">Summer</option>
+          <option value="winter">Winter</option>
+          <option value="autumn">Autumn</option>
+          <option value="spring">Spring</option>
+        </select>
+      </label>
+
+      <label class="add-storage-label">Note:
+        <textarea name="note" rows="2" placeholder="Optional..."></textarea>
+      </label>
+
+      <label class="add-storage-label">Photos:
+        <input type="file" name="photos" accept="image/*" multiple required class="add-storage-input" />
+      </label>
+
+      <button type="submit" class="add-storage-submit">Save</button>
+    </form>
+  </main>
+</body>
+</html>

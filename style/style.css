@@ -419,3 +419,65 @@ main {
 .hidden {
   display: none;
 }
+
+
+
+/*for the add item to storage form*/
+.add-storage-main {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: block;
+}
+
+.add-storage-title {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c3e50;
+  font-size: 24px;
+  display: block;
+}
+
+.add-storage-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.add-storage-label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+
+.add-storage-input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.add-storage-input[type="file"] {
+  margin-top: 5px;
+}
+
+.add-storage-submit {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin-left: 230px;
+}
+
+.add-storage-submit:hover {
+  background-color: #2980b9;
+}
