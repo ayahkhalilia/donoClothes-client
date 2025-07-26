@@ -88,6 +88,15 @@
     <label>Note (optional):</label>
     <input type="text" name="note" placeholder="Additional info..." /><br><br>
 
+
+    <div id="pickupDatesContainer">
+  <label>Available Pickup Dates:</label>
+<input type="date" name="pickupDates[]" class="pickup-date" required />
+</div>
+<button type="button" onclick="addPickupDate()">Add Another Date</button><br><br>
+
+
+
     <button type="submit">Send Donation Request</button>
   </form>
 
