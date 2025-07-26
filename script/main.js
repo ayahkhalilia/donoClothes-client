@@ -12,7 +12,7 @@ loginForm.addEventListener("submit", async (e) => {
   const password = formData.get("password");
 
   try {
-    const res = await fetch("https://donoclothes-server.onrender.com/auth/login", {
+    const res = await fetch("http://localhost:4000/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -24,7 +24,7 @@ loginForm.addEventListener("submit", async (e) => {
     const token = data.token;
 
     // Get user info to determine role
-    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+    const userRes = await fetch("http://localhost:4000/auth/me", {
       headers: { Authorization: "Bearer " + token }
     });
 
@@ -66,17 +66,16 @@ loginForm.addEventListener("submit", async (e) => {
       return;
     }
 
-    fetch("https://donoclothes-server.onrender.com/auth/me", {
+    fetch("http://localhost:4000/auth/me", {
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => res.json())
       .then((user) => {
         document.getElementById("welcomeMsg").textContent = `Welcome, ${user.username}`;
-        document.getElementById("userRole").textContent = `Role: ${user.role}`;
       })
       .catch((err) => console.error("Failed to fetch user info", err));
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+    fetch("http://localhost:4000/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => {
@@ -95,14 +94,14 @@ loginForm.addEventListener("submit", async (e) => {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-    fetch("https://donoclothes-server.onrender.com/auth/worker/clothes-requests", {
+    fetch("http://localhost:4000/auth/worker/clothes-requests", {
       headers: { Authorization: "Bearer " + token },
     })
       .then(res => res.json())
       .then(requests => renderClothesRequests(requests, token))
       .catch(err => console.error("Could not load clothes requests:", err));
 
-    fetch("https://donoclothes-server.onrender.com/auth/worker/donation-requests", {
+    fetch("http://localhost:4000/auth/worker/donation-requests", {
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => res.json())
@@ -110,7 +109,7 @@ loginForm.addEventListener("submit", async (e) => {
       .catch((err) => console.error("Could not load donation requests:", err));
 
     // Fetch branch info
-    fetch("https://donoclothes-server.onrender.com/auth/worker/get-branch", {
+    fetch("http://localhost:4000/auth/worker/get-branch", {
       headers: { Authorization: "Bearer " + token },
     })
       .then(res => res.json())
@@ -131,6 +130,9 @@ loginForm.addEventListener("submit", async (e) => {
   if (path.endsWith("additemtostorageform.html")) {
     runAddItemToStorageLogic();
   }
+  if (path.endsWith("/donerPages/home.html")) {
+    runDonetorHomePageLogic();
+  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -147,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     logoutBtn.addEventListener("click", async () => {
       try {
-        const res = await fetch("https://donoclothes-server.onrender.com/auth/logout", {
+        const res = await fetch("http://localhost:4000/auth/logout", {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`, 
@@ -185,7 +187,7 @@ async function runClothesRequestDetailsLogic() {
 
   // Load user info
   try {
-    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+    const userRes = await fetch("http://localhost:4000/auth/me", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -200,7 +202,7 @@ async function runClothesRequestDetailsLogic() {
 
   // Load user photo
   try {
-    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+    const photoRes = await fetch("http://localhost:4000/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -217,7 +219,7 @@ async function runClothesRequestDetailsLogic() {
 
   let request;
   try {
-    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/clothes-request-details/${requestId}`, {
+    const res = await fetch(`http://localhost:4000/auth/worker/clothes-request-details/${requestId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -240,7 +242,7 @@ async function runClothesRequestDetailsLogic() {
     const recipientId = request.recipient?._id;
     if (!recipientId) throw new Error("Recipient not found");
 
-    const userRes = await fetch(`https://donoclothes-server.onrender.com/auth/worker/user/${recipientId}`, {
+    const userRes = await fetch(`http://localhost:4000/auth/worker/user/${recipientId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -294,7 +296,7 @@ checkBtn.addEventListener("click", async () => {
   };
 
   try {
-    const storageRes = await fetch('https://donoclothes-server.onrender.com/auth/worker/storage/search-matching', {
+    const storageRes = await fetch('http://localhost:4000/auth/worker/storage/search-matching', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -367,7 +369,7 @@ checkBtn.addEventListener("click", async () => {
     }
 
     try {
-      const res = await fetch('https://donoclothes-server.onrender.com/auth/worker/storage/mark-donated', {
+      const res = await fetch('http://localhost:4000/auth/worker/storage/mark-donated', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -408,7 +410,7 @@ async function runDonationRequestDetailsLogic() {
   }
 
     try {
-    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+    const userRes = await fetch("http://localhost:4000/auth/me", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -423,7 +425,7 @@ async function runDonationRequestDetailsLogic() {
 
   // Load user photo
   try {
-    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+    const photoRes = await fetch("http://localhost:4000/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -439,7 +441,7 @@ async function runDonationRequestDetailsLogic() {
   }
 
   try {
-    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request-details/${requestId}`, {
+    const res = await fetch(`http://localhost:4000/auth/worker/donation-request-details/${requestId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -457,9 +459,42 @@ async function runDonationRequestDetailsLogic() {
       <p><strong>Color:</strong> ${request.color}</p>
       <p><strong>Season:</strong> ${request.classification}</p>
     `;
+const photoContainer = document.createElement("div");
+photoContainer.id = "donationPhotos";
+photoContainer.style.display = "flex";
+photoContainer.style.gap = "8px";
+photoContainer.style.flexWrap = "wrap";
+
+const photoCount = request.photos?.length || 0;
+for (let i = 0; i < photoCount; i++) {
+  const img = document.createElement("img");
+  img.style.cssText = "width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #ccc;";
+
+  try {
+    const photoRes = await fetch(`http://localhost:4000/auth/worker/donation-requests/${requestId}/photo/${i}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!photoRes.ok) throw new Error("Photo not found");
+
+    const blob = await photoRes.blob();
+    img.src = URL.createObjectURL(blob);
+  } catch (err) {
+    console.warn("Failed to load donation photo", err);
+    img.src = "placeholder-image.jpg"; 
+  }
+
+  photoContainer.appendChild(img);
+}
+
+
+
+const detailsdDiv = document.getElementById("requestDetails");
+detailsdDiv.appendChild(photoContainer);
+
     const donatorId=request.donator._id;
     if(!donatorId)throw new error("donator not found");
-    const donerRes=await fetch(`https://donoclothes-server.onrender.com/auth/worker/user/${donatorId}`,{
+    const donerRes=await fetch(`http://localhost:4000/auth/worker/user/${donatorId}`,{
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -467,16 +502,15 @@ async function runDonationRequestDetailsLogic() {
     if (!donerRes.ok) throw new error("failed to fetch donator details");
     const donator=await donerRes.json();
     document.querySelector(".donator-card").innerHTML=`
-       <img src="${donator.photo || ''}" alt="donator"/>
        <div class="info">
+        <img id="recipientPhoto" alt="Recipient Photo" class="recipient-pic" />
        <h3>${donator.username}</h3>
        <p>${donator.phonenumber}</p>
        <p>Email: ${donator.email}</p> 
        </div>
     `;
 
-    // 1. Fetch the donator's stats (accepted count + pending requests)
-const statsRes = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/donator/${donatorId}/stats`, {
+const statsRes = await fetch(`http://localhost:4000/auth/worker/donation-request/donator/${donatorId}/stats`, {
   headers: {
     Authorization: "Bearer " + token,
   },
@@ -486,12 +520,10 @@ if (!statsRes.ok) throw new Error("Failed to fetch donator stats");
 
 const stats = await statsRes.json();
 
-//Display accepted donation count
 const statsContainer = document.createElement("div");
 statsContainer.innerHTML = `<p><strong>All Donations:</strong> ${stats.acceptedCount}</p>`;
 document.querySelector(".donator-card").appendChild(statsContainer);
 
-//Display pending requests (color, gender, type)
 if (stats.pendingRequests.length > 0) {
   const listContainer = document.createElement("div");
   listContainer.innerHTML = `<div><h4>Recent Requests:</h4>
@@ -516,10 +548,46 @@ if (stats.pendingRequests.length > 0) {
     alert("Could not load request details");
   }
 
+
+  try {
+    const resp = await fetch(`http://localhost:4000/auth/worker/donation-request-details/${requestId}`, {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    const reqs = await resp.json();
+    const donatorId = reqs.donator?._id || reqs.donator;
+    const donrphoto=document.getElementById("recipientPhoto");
+    donrphoto.style.cssText = "width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;";
+
+    if (donatorId) {
+      fetch(`http://localhost:4000/auth/worker/donation-request/${donatorId}/photo`, {
+        headers: { Authorization: "Bearer " + token }
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Photo not found");
+          return res.blob();
+        })
+        .then(blob => {
+          donrphoto.src = URL.createObjectURL(blob);
+        })
+        .catch(err => {
+          console.warn("Failed to load donation photo", err);
+          donrphoto.src = "placeholder-image.jpg";
+        });
+    } else {
+      donrphoto.src = "placeholder-image.jpg";
+    }
+  } catch (err) {
+    console.error("Failed to load request details", err);
+  }
+
+
+
+
   //this is for the reject and accept button
   document.querySelector(".accept-btn").addEventListener("click", async () => {
   try {
-    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/${requestId}/accept`, {
+    const res = await fetch(`http://localhost:4000/auth/worker/donation-request/${requestId}/accept`, {
       method: "PUT",
       headers: { Authorization: "Bearer " + token },
     });
@@ -534,7 +602,7 @@ if (stats.pendingRequests.length > 0) {
 
 document.querySelector(".decline-btn").addEventListener("click", async () => {
   try {
-    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/${requestId}/reject`, {
+    const res = await fetch(`http://localhost:4000/auth/worker/donation-request/${requestId}/reject`, {
       method: "PUT",
       headers: { Authorization: "Bearer " + token },
     });
@@ -548,6 +616,7 @@ document.querySelector(".decline-btn").addEventListener("click", async () => {
 });
 
 }
+
 
 
 
@@ -573,7 +642,7 @@ function renderBranch(branch,token){
       </div>
     `;
 
-fetch("https://donoclothes-server.onrender.com/auth/worker/get-branch-photo", {
+fetch("http://localhost:4000/auth/worker/get-branch-photo", {
   headers: {
     Authorization: "Bearer " + token,
   },
@@ -607,7 +676,7 @@ async function runStoragePageLogic(){
   }
 
     try {
-    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+    const userRes = await fetch("http://localhost:4000/auth/me", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -621,7 +690,7 @@ async function runStoragePageLogic(){
   }
 
   try {
-    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+    const photoRes = await fetch("http://localhost:4000/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -639,7 +708,7 @@ async function runStoragePageLogic(){
 
 
     try {
-    const res = await fetch('https://donoclothes-server.onrender.com/auth/worker/get-all-storage-items',{
+    const res = await fetch('http://localhost:4000/auth/worker/get-all-storage-items',{
       headers: { Authorization: "Bearer " + token },
     });
     const items = await res.json();
@@ -685,7 +754,7 @@ async function runStoragePageLogic(){
     });
       
         try {
-          const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/update-storage-item/${item._id}`, {
+          const res = await fetch(`http://localhost:4000/auth/worker/update-storage-item/${item._id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -707,7 +776,7 @@ async function runStoragePageLogic(){
     if (!confirm("Are you sure you want to delete this item?")) return;
 
     try {
-      const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/delete-storage-item/${item._id}`, {
+      const res = await fetch(`http://localhost:4000/auth/worker/delete-storage-item/${item._id}`, {
         method: 'DELETE',
         headers: {
           Authorization: 'Bearer ' + token
@@ -780,7 +849,7 @@ function renderClothesRequests(requests, token) {
 
     // Load recipient photo
     if (r.recipient && r.recipient._id) {
-      fetch(`https://donoclothes-server.onrender.com/auth/worker/clothes-requests/${r.recipient._id}/photo`, {
+      fetch(`http://localhost:4000/auth/worker/clothes-requests/${r.recipient._id}/photo`, {
         headers: { Authorization: "Bearer " + token }
       })
         .then(res => {
@@ -820,46 +889,6 @@ function renderClothesRequests(requests, token) {
 
 
 
-
-////doners page
-document.getElementById("donationForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const token = new URLSearchParams(window.location.search).get("token");
-  if (!token) {
-    alert("You're not logged in");
-    return;
-  }
-
-  const form = e.target;
-  const formData = new FormData(form);
-
-  try {
-    const res = await fetch("https://donoclothes-server.onrender.com/auth/donation-request", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + token
-      },
-      body: formData
-    });
-
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.error || "Unknown error");
-    }
-
-    const result = await res.json();
-    alert("Donation request submitted!");
-    form.reset();
-  } catch (err) {
-    alert("Error: " + err.message);
-    console.error(err);
-  }
-});
-
-
-
-
 //////worker for donation requests
 function renderDonationRequests(requests, token) {
   const list = document.querySelector("#donationRequests .request-list");
@@ -874,12 +903,11 @@ function renderDonationRequests(requests, token) {
     const li = document.createElement("li");
     li.className = "request-item";
 
-    const imgContainer = document.createElement("div");
-    for (let i = 0; i < (r.photoCount || 0); i++) {
-const img = document.createElement("img");
-img.style.cssText = "width:50px; height:50px; margin:2px; object-fit:cover; border-radius:4px;";
 
-fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-requests/${r._id}/photo/${i}`, {
+const img = document.createElement("img");
+img.style.cssText = "width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;";
+if(r.donator && r.donator._id){
+  fetch(`http://localhost:4000/auth/worker/donation-request/${r.donator._id}/photo`, {
   headers: { Authorization: "Bearer " + token }
 })
   .then(res => {
@@ -893,13 +921,13 @@ fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-requests/${r
     console.warn("Failed to load donation photo", err);
     img.src = "placeholder-image.jpg";
   });
-
-imgContainer.appendChild(img);
-    }
+}else {
+  img.src = "placeholder-image.jpg";
+}
 
     const span = document.createElement("span");
     span.innerHTML = `
-      <strong>${r.donatorName}</strong><br>
+      <strong>${r.donator?.username}</strong><br>
       <small>
         Gender: ${r.gender}, Age: ${r.age}<br>
         Type: ${r.type}, Size: ${r.size}, Color: ${r.color}<br>
@@ -908,7 +936,7 @@ imgContainer.appendChild(img);
       </small>
     `;
 
-    li.appendChild(imgContainer);
+    li.appendChild(img);
     li.appendChild(span);
     list.appendChild(li);
     li.addEventListener("click", () => {
@@ -931,7 +959,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+    const userRes = await fetch("http://localhost:4000/auth/me", {
       headers: { Authorization: "Bearer " + token },
     });
     console.log("User response status:", userRes.status);
@@ -949,7 +977,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+    const photoRes = await fetch("http://localhost:4000/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
     });
     console.log("Photo status:", photoRes.status);
@@ -978,7 +1006,7 @@ async function runAddItemToStorageLogic(){
   }
 
     try {
-    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+    const userRes = await fetch("http://localhost:4000/auth/me", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -992,7 +1020,7 @@ async function runAddItemToStorageLogic(){
   }
 
   try {
-    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+    const photoRes = await fetch("http://localhost:4000/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -1016,7 +1044,7 @@ async function runAddItemToStorageLogic(){
    const formData = new FormData(form);
 
     try {
-      const res = await fetch("https://donoclothes-server.onrender.com/auth/worker/add-item-to-storage", {
+      const res = await fetch("http://localhost:4000/auth/worker/add-item-to-storage", {
         method: "POST",
         headers: {
           Authorization: "Bearer " + token,
@@ -1034,4 +1062,111 @@ async function runAddItemToStorageLogic(){
     }
   });
 
+}
+
+
+
+/////donator pages js
+async function runDonetorHomePageLogic(){
+    const params= new URLSearchParams(window.location.search);
+  const token=params.get("token");
+  if(!token){
+    alert("Missing token. Please log in first.");
+    window.location.href="index.html";
+    return;
+  }
+
+    try {
+    const userRes = await fetch("http://localhost:4000/auth/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+    const user = await userRes.json();
+    const welcomeEl = document.getElementById("welcomeMsg");
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
+    const userId=user._id;
+    console.log(userId);
+  } catch (err) {
+    console.error("Error fetching user info:", err);
+  }
+
+  try {
+    const photoRes = await fetch("http://localhost:4000/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (photoRes.ok) {
+      const blob = await photoRes.blob();
+      const imgEl = document.getElementById("userPhoto");
+      if (imgEl) imgEl.src = URL.createObjectURL(blob);
+    } else {
+      console.warn("User photo not found");
+    }
+  } catch (err) {
+    console.warn("Failed to load user photo:", err);
+  }
+  donerform=document.getElementById("donationForm");
+  donerform.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
+
+  try {
+    const res = await fetch("http://localhost:4000/auth/donation-request", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token
+      },
+      body: formData
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error || "Unknown error");
+    }
+
+    const result = await res.json();
+    alert("Donation request submitted!");
+    form.reset();
+  } catch (err) {
+    alert("Error: " + err.message);
+    console.error(err);
+  }
+});
+  const alertBell = document.getElementById("alertBell");
+  const alertPopup = document.getElementById("alertPopup");
+  const alertList = document.getElementById("alertList");
+  const unreadMark = document.getElementById("unreadMark");
+  alertBell.addEventListener("click", async () => {
+      console.log("Bell clicked");
+
+  alertPopup.classList.toggle("hidden");
+
+  if (!alertPopup.classList.contains("hidden")) {
+    await fetch(`http://localhost:4000/mark-read/${userId}`, {
+      method: "PUT"
+    });
+    unreadMark.classList.add("hidden");
+  }
+  console.log(userId)
+});
+loadAlerts(userId);
+setInterval(() => loadAlerts(userId), 10000);
+
+}
+
+async function loadAlerts(userId) {
+  if (!userId) return;
+  const alertList = document.getElementById("alertList");
+  const unreadMark = document.getElementById("unreadMark");
+  const res = await fetch(`http://localhost:4000/alert-bell/${userId}`);
+  const alerts = await res.json();
+
+  const unread = alerts.filter(a => !a.read);
+  unreadMark.classList.toggle("hidden", unread.length === 0);
+
+  alertList.innerHTML = alerts.map(alert =>
+    `<li>${alert.message}</li>`).join("");
 }
