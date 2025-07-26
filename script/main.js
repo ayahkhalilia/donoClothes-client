@@ -38,7 +38,7 @@ loginForm.addEventListener("submit", async (e) => {
         targetPage = "homepage.html";
         break;
       case "donator":
-        targetPage = "donerPages/home.html";
+        targetPage = "donerpages/home.html";
         break;
       case "recipient":
         targetPage = "#"; // do i need to put the third user?
@@ -130,7 +130,7 @@ loginForm.addEventListener("submit", async (e) => {
   if (path.endsWith("additemtostorageform.html")) {
     runAddItemToStorageLogic();
   }
-  if (path.endsWith("/donerPages/home.html")) {
+  if (path.endsWith("donerpages/home.html")) {
     runDonetorHomePageLogic();
   }
 });
