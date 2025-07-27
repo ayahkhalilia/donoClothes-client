@@ -38,7 +38,7 @@ loginForm.addEventListener("submit", async (e) => {
         targetPage = "homepage.html";
         break;
       case "donator":
-        targetPage = "donerPages/home.html";
+        targetPage = "donerpages/home.html";
         break;
       case "recipient":
         targetPage = "#"; // do i need to put the third user?
@@ -72,7 +72,6 @@ loginForm.addEventListener("submit", async (e) => {
       .then((res) => res.json())
       .then((user) => {
         document.getElementById("welcomeMsg").textContent = `Welcome, ${user.username}`;
-        document.getElementById("userRole").textContent = `Role: ${user.role}`;
       })
       .catch((err) => console.error("Failed to fetch user info", err));
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,6 +129,9 @@ loginForm.addEventListener("submit", async (e) => {
   }
   if (path.endsWith("additemtostorageform.html")) {
     runAddItemToStorageLogic();
+  }
+  if (path.endsWith("donerpages/home.html")) {
+    runDonetorHomePageLogic();
   }
 });
 
@@ -239,7 +241,7 @@ async function runClothesRequestDetailsLogic() {
 
     const recipientId = request.recipient?._id;
     if (!recipientId) throw new Error("Recipient not found");
-
+    console.log(recipientId);
     const userRes = await fetch(`https://donoclothes-server.onrender.com/auth/worker/user/${recipientId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -249,7 +251,7 @@ async function runClothesRequestDetailsLogic() {
     const recipient = await userRes.json();
 
     document.querySelector(".profile-card").innerHTML = `
-      <img src="${recipient.photo || 'https://via.placeholder.com/100'}" alt="User" />
+      <img id="recipientphoto" alt="recipient photo" />
       <h3>${recipient.username}</h3>
       <p>${recipient.city || ''}</p>
       <div class="info">
@@ -262,6 +264,25 @@ async function runClothesRequestDetailsLogic() {
       </div>
       <div class="request-history">🔄 Requests History</div>
     `;
+    console.log(recipientId);
+    const recipientphoto=document.getElementById("recipientphoto");
+    recipientphoto.style.cssText = "width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;";
+    if(recipientId){
+      fetch(`https://donoclothes-server.onrender.com/auth/worker/clothes-requests/${recipientId}/photo`, {
+        headers: { Authorization: "Bearer " + token }
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Photo not found");
+          return res.blob();
+        })
+        .then(blob => {
+          recipientphoto.src = URL.createObjectURL(blob);
+        })
+        .catch(err => {
+          console.warn("Failed to load donation photo", err);
+          recipientphoto.src = "placeholder-image.jpg";
+        });
+    }
   } catch (err) {
     console.error("Error loading request:", err);
     alert("Could not load request details");
@@ -457,6 +478,63 @@ async function runDonationRequestDetailsLogic() {
       <p><strong>Color:</strong> ${request.color}</p>
       <p><strong>Season:</strong> ${request.classification}</p>
     `;
+  const pickupSection = document.querySelector(".pickup-schedule");
+const dates = request.availablePickupDates || [];
+
+pickupSection.innerHTML = `<h3>Request to collect the donation from house on:</h3>`;
+
+if (dates.length > 0) {
+  const dateSelect = document.createElement("select");
+  dateSelect.id = "pickupDateSelect";
+  dates.forEach(d => {
+    const option = document.createElement("option");
+    const formatted = new Date(d).toLocaleString("en-GB", { dateStyle: "medium" });
+    option.value = d;
+    option.textContent = formatted;
+    dateSelect.appendChild(option);
+  });
+
+  pickupSection.appendChild(dateSelect);
+  const btn = document.createElement("button");
+  btn.textContent = "Confirm Pickup Date";
+  btn.onclick = () => alert(`You selected ${dateSelect.value}`);
+  pickupSection.appendChild(btn);
+} else {
+  pickupSection.innerHTML += "<p>No available dates provided.</p>";
+}
+const photoContainer = document.createElement("div");
+photoContainer.id = "donationPhotos";
+photoContainer.style.display = "flex";
+photoContainer.style.gap = "8px";
+photoContainer.style.flexWrap = "wrap";
+
+const photoCount = request.photos?.length || 0;
+for (let i = 0; i < photoCount; i++) {
+  const img = document.createElement("img");
+  img.style.cssText = "width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #ccc;";
+
+  try {
+    const photoRes = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-requests/${requestId}/photo/${i}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!photoRes.ok) throw new Error("Photo not found");
+
+    const blob = await photoRes.blob();
+    img.src = URL.createObjectURL(blob);
+  } catch (err) {
+    console.warn("Failed to load donation photo", err);
+    img.src = "placeholder-image.jpg"; 
+  }
+
+  photoContainer.appendChild(img);
+}
+
+
+
+const detailsdDiv = document.getElementById("requestDetails");
+detailsdDiv.appendChild(photoContainer);
+
     const donatorId=request.donator._id;
     if(!donatorId)throw new error("donator not found");
     const donerRes=await fetch(`https://donoclothes-server.onrender.com/auth/worker/user/${donatorId}`,{
@@ -467,15 +545,14 @@ async function runDonationRequestDetailsLogic() {
     if (!donerRes.ok) throw new error("failed to fetch donator details");
     const donator=await donerRes.json();
     document.querySelector(".donator-card").innerHTML=`
-       <img src="${donator.photo || ''}" alt="donator"/>
        <div class="info">
+        <img id="recipientPhoto" alt="Recipient Photo" class="recipient-pic" />
        <h3>${donator.username}</h3>
        <p>${donator.phonenumber}</p>
        <p>Email: ${donator.email}</p> 
        </div>
     `;
 
-    // 1. Fetch the donator's stats (accepted count + pending requests)
 const statsRes = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/donator/${donatorId}/stats`, {
   headers: {
     Authorization: "Bearer " + token,
@@ -486,12 +563,10 @@ if (!statsRes.ok) throw new Error("Failed to fetch donator stats");
 
 const stats = await statsRes.json();
 
-//Display accepted donation count
 const statsContainer = document.createElement("div");
 statsContainer.innerHTML = `<p><strong>All Donations:</strong> ${stats.acceptedCount}</p>`;
 document.querySelector(".donator-card").appendChild(statsContainer);
 
-//Display pending requests (color, gender, type)
 if (stats.pendingRequests.length > 0) {
   const listContainer = document.createElement("div");
   listContainer.innerHTML = `<div><h4>Recent Requests:</h4>
@@ -516,12 +591,55 @@ if (stats.pendingRequests.length > 0) {
     alert("Could not load request details");
   }
 
+
+  try {
+    const resp = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request-details/${requestId}`, {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    const reqs = await resp.json();
+    const donatorId = reqs.donator?._id || reqs.donator;
+    const donrphoto=document.getElementById("recipientPhoto");
+    donrphoto.style.cssText = "width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;";
+
+    if (donatorId) {
+      fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/${donatorId}/photo`, {
+        headers: { Authorization: "Bearer " + token }
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Photo not found");
+          return res.blob();
+        })
+        .then(blob => {
+          donrphoto.src = URL.createObjectURL(blob);
+        })
+        .catch(err => {
+          console.warn("Failed to load donation photo", err);
+          donrphoto.src = "placeholder-image.jpg";
+        });
+    } else {
+      donrphoto.src = "placeholder-image.jpg";
+    }
+  } catch (err) {
+    console.error("Failed to load request details", err);
+  }
+
+
+
   //this is for the reject and accept button
   document.querySelector(".accept-btn").addEventListener("click", async () => {
-  try {
+     const selectedPickupDate  = document.getElementById("pickupDateSelect")?.value;
+  if (!selectedPickupDate ) {
+    alert("Please select a pickup date before accepting.");
+    return;
+  }
+    try {
     const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/${requestId}/accept`, {
       method: "PUT",
-      headers: { Authorization: "Bearer " + token },
+      headers: { Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ selectedPickupDate :selectedPickupDate  })
     });
 
     const data = await res.json();
@@ -548,6 +666,7 @@ document.querySelector(".decline-btn").addEventListener("click", async () => {
 });
 
 }
+
 
 
 
@@ -820,46 +939,6 @@ function renderClothesRequests(requests, token) {
 
 
 
-
-////doners page
-document.getElementById("donationForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const token = new URLSearchParams(window.location.search).get("token");
-  if (!token) {
-    alert("You're not logged in");
-    return;
-  }
-
-  const form = e.target;
-  const formData = new FormData(form);
-
-  try {
-    const res = await fetch("https://donoclothes-server.onrender.com/auth/donation-request", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + token
-      },
-      body: formData
-    });
-
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.error || "Unknown error");
-    }
-
-    const result = await res.json();
-    alert("Donation request submitted!");
-    form.reset();
-  } catch (err) {
-    alert("Error: " + err.message);
-    console.error(err);
-  }
-});
-
-
-
-
 //////worker for donation requests
 function renderDonationRequests(requests, token) {
   const list = document.querySelector("#donationRequests .request-list");
@@ -874,12 +953,11 @@ function renderDonationRequests(requests, token) {
     const li = document.createElement("li");
     li.className = "request-item";
 
-    const imgContainer = document.createElement("div");
-    for (let i = 0; i < (r.photoCount || 0); i++) {
-const img = document.createElement("img");
-img.style.cssText = "width:50px; height:50px; margin:2px; object-fit:cover; border-radius:4px;";
 
-fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-requests/${r._id}/photo/${i}`, {
+const img = document.createElement("img");
+img.style.cssText = "width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;";
+if(r.donator && r.donator._id){
+  fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/${r.donator._id}/photo`, {
   headers: { Authorization: "Bearer " + token }
 })
   .then(res => {
@@ -893,13 +971,13 @@ fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-requests/${r
     console.warn("Failed to load donation photo", err);
     img.src = "placeholder-image.jpg";
   });
-
-imgContainer.appendChild(img);
-    }
+}else {
+  img.src = "placeholder-image.jpg";
+}
 
     const span = document.createElement("span");
     span.innerHTML = `
-      <strong>${r.donatorName}</strong><br>
+      <strong>${r.donator?.username}</strong><br>
       <small>
         Gender: ${r.gender}, Age: ${r.age}<br>
         Type: ${r.type}, Size: ${r.size}, Color: ${r.color}<br>
@@ -908,7 +986,7 @@ imgContainer.appendChild(img);
       </small>
     `;
 
-    li.appendChild(imgContainer);
+    li.appendChild(img);
     li.appendChild(span);
     list.appendChild(li);
     li.addEventListener("click", () => {
@@ -1035,3 +1113,130 @@ async function runAddItemToStorageLogic(){
   });
 
 }
+
+
+
+/////donator pages js
+async function runDonetorHomePageLogic(){
+    const params= new URLSearchParams(window.location.search);
+  const token=params.get("token");
+  if(!token){
+    alert("Missing token. Please log in first.");
+    window.location.href="index.html";
+    return;
+  }
+
+    try {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+    const user = await userRes.json();
+    const welcomeEl = document.getElementById("welcomeMsg");
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
+    const userId=user._id;
+    console.log(userId);
+  } catch (err) {
+    console.error("Error fetching user info:", err);
+  }
+
+  try {
+    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (photoRes.ok) {
+      const blob = await photoRes.blob();
+      const imgEl = document.getElementById("userPhoto");
+      if (imgEl) imgEl.src = URL.createObjectURL(blob);
+    } else {
+      console.warn("User photo not found");
+    }
+  } catch (err) {
+    console.warn("Failed to load user photo:", err);
+  }
+  donerform=document.getElementById("donationForm");
+  donerform.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = document.getElementById("donationForm");
+  const formData = new FormData(form);
+
+  
+const pickupDates = Array.from(document.querySelectorAll('.pickup-date')).map(input => input.value);
+pickupDates.forEach(date => formData.append("availablePickupDates[]", date));
+
+
+
+  try {
+    const res = await fetch("https://donoclothes-server.onrender.com/auth/donation-request", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token
+      },
+      body: formData
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error || "Unknown error");
+    }
+
+    const result = await res.json();
+    alert("Donation request submitted!");
+    form.reset();
+  } catch (err) {
+    alert("Error: " + err.message);
+    console.error(err);
+  }
+});
+  const alertBell = document.getElementById("alertBell");
+  const alertPopup = document.getElementById("alertPopup");
+  const alertList = document.getElementById("alertList");
+  const unreadMark = document.getElementById("unreadMark");
+  alertBell.addEventListener("click", async () => {
+      console.log("Bell clicked");
+
+  alertPopup.classList.toggle("hidden");
+
+  if (!alertPopup.classList.contains("hidden")) {
+    await fetch(`https://donoclothes-server.onrender.com/mark-read/${userId}`, {
+      method: "PUT"
+    });
+    unreadMark.classList.add("hidden");
+  }
+  console.log(userId)
+});
+loadAlerts(userId);
+setInterval(() => loadAlerts(userId), 10000);
+
+}
+
+async function loadAlerts(userId) {
+  if (!userId) return;
+  const alertList = document.getElementById("alertList");
+  const unreadMark = document.getElementById("unreadMark");
+  const res = await fetch(`https://donoclothes-server.onrender.com/alert-bell/${userId}`);
+  const alerts = await res.json();
+
+  const unread = alerts.filter(a => !a.read);
+  unreadMark.classList.toggle("hidden", unread.length === 0);
+
+  alertList.innerHTML = alerts.map(alert =>
+    `<li>${alert.message}</li>`).join("");
+}
+
+
+////// pickup date function for donation requests 
+function addPickupDate() {
+  const container = document.getElementById("pickupDatesContainer");
+  const input = document.createElement("input");
+  input.type = "date";
+  input.name = "pickupDates[]";
+  input.classList.add("pickup-date");
+  input.required = true;
+  container.appendChild(document.createElement("br"));
+  container.appendChild(input);
+}
+
