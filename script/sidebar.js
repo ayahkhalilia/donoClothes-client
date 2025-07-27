@@ -7,7 +7,7 @@ async function toggleSidebar() {
     if (!token) return;
 
         try {
-    const userRes = await fetch("http://localhost:4000/auth/me", {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -25,7 +25,7 @@ async function toggleSidebar() {
   }
 
     try {
-    const photoRes = await fetch("http://localhost:4000/auth/me/photo", {
+    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
       headers: { Authorization: "Bearer " + token },
     });
 
@@ -47,3 +47,4 @@ function logout() {
   //sessionStorage.removeItem("token");
   window.location.href = "index.html";
 }
+
