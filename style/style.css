@@ -258,6 +258,7 @@ main {
       align-items: center;
       gap: 5px;
       font-size: 14px;
+      pointer-events: auto;
     }
 
     .back-icon {
@@ -532,3 +533,13 @@ main {
   padding: 10px;
   border-bottom: 1px solid #eee;
 }
+
+
+#requestsList{
+  padding: 10px;
+}
+
+
+
+
+

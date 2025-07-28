@@ -65,6 +65,18 @@ loginForm.addEventListener("submit", async (e) => {
       alert("Missing token. Please log in first.");
       return;
     }
+const donationInput = document.getElementById("donationSearchInput");
+const clothesInput = document.getElementById("clothesSearchInput");
+
+donationInput?.addEventListener("input", () => {
+  const query = donationInput.value.trim();
+  searchDonations(query, token);
+});
+
+clothesInput?.addEventListener("input", () => {
+  const query = clothesInput.value.trim();
+  searchClothes(query, token);
+});
 
     fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
@@ -132,6 +144,9 @@ loginForm.addEventListener("submit", async (e) => {
   }
   if (path.endsWith("homepageiphone.html")) {
     //runDonetorHomePageLogic();
+  }
+  if (path.endsWith("clothesreqhistory.html")) {
+    runClothesReqHistoryPageLogic();
   }
 });
 
@@ -262,7 +277,7 @@ async function runClothesRequestDetailsLogic() {
         <p>Normal clothes request for: ${request.gender}, age ${request.age}</p>
         <p>Address: ${recipient.address}</p>
       </div>
-      <div class="request-history">🔄 Requests History</div>
+<div class="request-history" id="requestHistoryBtn" style="cursor: pointer;">🔄 Requests History</div>
     `;
     console.log(recipientId);
     const recipientphoto=document.getElementById("recipientphoto");
@@ -412,6 +427,21 @@ checkBtn.addEventListener("click", async () => {
       alert("An error occurred while saving.");
     }
   });
+
+
+  const historyBtn = document.getElementById("requestHistoryBtn");
+if (historyBtn) {
+  historyBtn.addEventListener("click", () => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const recipientId = request.recipient?._id;
+    if (token && recipientId) {
+      window.location.href = `clothesreqhistory.html?token=${token}&recipientId=${recipientId}`;
+    } else {
+      alert("Missing token or recipient ID.");
+    }
+  });
+}
 }
 
 
@@ -670,7 +700,7 @@ document.querySelector(".decline-btn").addEventListener("click", async () => {
 
 
 
-function renderBranch(branch,token){
+async function renderBranch(branch,token){
   const branchinfo=document.querySelector('#branch-info .contact');
   branchinfo.innerHTML= `
       <h3>${branch.name}</h3>
@@ -682,12 +712,11 @@ function renderBranch(branch,token){
         <p>📧 ${branch.email}</p>
       </div>
       <div class="quantity">
-        <p>Quantity in storage: <strong>538/1200</strong></p>
+         <p id="countitems">Quantity in storage: <strong>Loading...</strong></p>
       </div>
       <div class="shortage">
         <p><strong>Recent shortage in storage:</strong></p>
         <ul>
-          <!-- You can dynamically add shortages if you have them in the DB -->
         </ul>
       </div>
     `;
@@ -711,6 +740,25 @@ fetch("https://donoclothes-server.onrender.com/auth/worker/get-branch-photo", {
   .catch((err) => {
     console.warn("No branch photo:", err);
   });
+  try {
+    const res = await fetch("https://donoclothes-server.onrender.com/auth/worker/count-items-in-storage", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch storage count");
+
+    const data = await res.json();
+
+    const countitemsinstorage = document.getElementById("countitems");
+    countitemsinstorage.innerHTML = `Quantity in storage: <strong>${data.availableItems}</strong>`;
+  } catch (err) {
+    console.error("Error counting items in storage:", err.message);
+    const countitemsinstorage = document.getElementById("countitems");
+    countitemsinstorage.innerHTML = `Quantity in storage: <strong>Error loading</strong>`;
+  }
 }
 
 
@@ -935,7 +983,10 @@ function renderClothesRequests(requests, token) {
         window.location.href=`clothesreqdetails.html?token=${encodeURIComponent(token)}&id=${r._id}`;
     });    
   });
+
 }
+
+
 
 
 
@@ -995,6 +1046,44 @@ if(r.donator && r.donator._id){
 
   });
 }
+
+
+async function searchClothes(query, token) {
+  try {
+    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/clothes-requests/search?query=${encodeURIComponent(query)}`, {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    });
+
+    if (!res.ok) throw new Error("Search failed");
+    const data = await res.json();
+    renderClothesRequests(data, token);
+  } catch (err) {
+    console.error("Clothes search failed:", err);
+  }
+}
+
+async function searchDonations(query, token) {
+  try {
+    const res = await fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-requests/search?query=${encodeURIComponent(query)}`, {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    });
+
+    if (!res.ok) throw new Error("Search failed");
+    const data = await res.json();
+    renderDonationRequests(data, token);
+  } catch (err) {
+    console.error("Donation search failed:", err);
+  }
+}
+
+
+
+
+
 
 
 
@@ -1239,4 +1328,85 @@ function addPickupDate() {
   container.appendChild(document.createElement("br"));
   container.appendChild(input);
 }
+
+async function runClothesReqHistoryPageLogic(){
+  const params= new URLSearchParams(window.location.search);
+  const token=params.get("token");
+  const recipientId = params.get("recipientId");
+  console.log(recipientId);
+  if(!token){
+    alert("Missing token. Please log in first.");
+    window.location.href="index.html";
+    return;
+  }
+
+    try {
+    const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+    const user = await userRes.json();
+    const welcomeEl = document.getElementById("welcomeMsg");
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${user.username}`;
+    const userId=user._id;
+    console.log(userId);
+  } catch (err) {
+    console.error("Error fetching user info:", err);
+  }
+
+  try {
+    const photoRes = await fetch("https://donoclothes-server.onrender.com/auth/me/photo", {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (photoRes.ok) {
+      const blob = await photoRes.blob();
+      const imgEl = document.getElementById("userPhoto");
+      if (imgEl) imgEl.src = URL.createObjectURL(blob);
+    } else {
+      console.warn("User photo not found");
+    }
+  } catch (err) {
+    console.warn("Failed to load user photo:", err);
+  }
+
+   try{
+  // Fetch user requests
+    const reqRes = await fetch(`https://donoclothes-server.onrender.com/auth/worker/get-recipient-request-history/${recipientId}`, {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    const requests = await reqRes.json();
+    console.log("rqq",requests);
+    const requestsContainer=document.getElementById("requestsList");
+    if (requests.length === 0) {
+      requestsContainer.innerHTML = "<p>No requests found.</p>";
+      return;
+    }
+
+    requestsContainer.innerHTML = "";
+    requests.forEach(req => {
+      const card = document.createElement("div");
+      card.className = "request-card";
+      card.style.cssText = "border:1px solid #ccc; padding:15px; margin:10px 0; border-radius:8px;";
+
+      card.innerHTML = `
+        <p><strong>Type:</strong> ${req.type}</p>
+        <p><strong>Gender:</strong> ${req.gender}</p>
+        <p><strong>Size:</strong> ${req.size}</p>
+        <p><strong>Color:</strong> ${req.color}</p>
+        <p><strong>Status:</strong> ${req.status}</p>
+      `;
+
+      requestsContainer.appendChild(card);
+    });
+
+  } catch (err) {
+    console.error("Error loading request history:", err);
+    alert("Failed to load request history.");
+  }
+}
+
 
