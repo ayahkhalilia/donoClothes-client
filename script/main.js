@@ -67,6 +67,20 @@ loginForm.addEventListener("submit", async (e) => {
     }
 const donationInput = document.getElementById("donationSearchInput");
 const clothesInput = document.getElementById("clothesSearchInput");
+fetch("https://donoclothes-server.onrender.com/auth/logo", {
+      headers: { Authorization: "Bearer " + token },
+    })
+  .then((res) => {
+    if (!res.ok) throw new Error("Logo not found");
+    return res.blob();
+  })
+  .then((blob) => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById("logoImg").src = url;
+  })
+  .catch((err) => {
+    console.error("Failed to load logo:", err);
+  });
 
 donationInput?.addEventListener("input", () => {
   const query = donationInput.value.trim();
@@ -199,7 +213,20 @@ async function runClothesRequestDetailsLogic() {
     window.location.href = "index.html";
     return;
   }
-
+fetch("https://donoclothes-server.onrender.com/auth/logo", {
+      headers: { Authorization: "Bearer " + token },
+    })
+  .then((res) => {
+    if (!res.ok) throw new Error("Logo not found");
+    return res.blob();
+  })
+  .then((blob) => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById("logoImg").src = url;
+  })
+  .catch((err) => {
+    console.error("Failed to load logo:", err);
+  });
   // Load user info
   try {
     const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
@@ -361,7 +388,29 @@ checkBtn.addEventListener("click", async () => {
       card.style.padding = '10px';
       card.style.margin = '10px 0';
 
-      card.innerHTML = `
+
+const img = document.createElement('img');
+img.style.cssText = "width:100px; height:100px; object-fit:cover; border-radius:10px; margin-bottom:10px;";
+img.alt = "Storage Item Photo";
+
+// Load first photo
+fetch(`https://donoclothes-server.onrender.com/auth/worker/storage/${item._id}/photo/0`, {
+  headers: { Authorization: 'Bearer ' + token }
+})
+  .then(res => {
+    if (!res.ok) throw new Error("No photo");
+    return res.blob();
+  })
+  .then(blob => {
+    img.src = URL.createObjectURL(blob);
+  })
+  .catch(() => {
+    img.src = "placeholder-image.jpg";
+  });
+
+card.appendChild(img);
+const details = document.createElement("div");
+details.innerHTML = `
         <p><strong>Type:</strong> ${item.type}</p>
         <p><strong>Gender:</strong> ${item.gender}</p>
         <p><strong>Color:</strong> ${item.color}</p>
@@ -369,6 +418,7 @@ checkBtn.addEventListener("click", async () => {
         <p><strong>Status:</strong> ${item.status}</p>
         <button class="select-btn" data-id="${item._id}">Select</button>
       `;
+card.appendChild(details);
 
       storageBox.appendChild(card);
     });
@@ -457,7 +507,20 @@ async function runDonationRequestDetailsLogic() {
     window.location.href = "index.html";
     return;
   }
-
+fetch("https://donoclothes-server.onrender.com/auth/logo", {
+      headers: { Authorization: "Bearer " + token },
+    })
+  .then((res) => {
+    if (!res.ok) throw new Error("Logo not found");
+    return res.blob();
+  })
+  .then((blob) => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById("logoImg").src = url;
+  })
+  .catch((err) => {
+    console.error("Failed to load logo:", err);
+  });
     try {
     const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
@@ -772,7 +835,20 @@ async function runStoragePageLogic(){
     window.location.href="index.html";
     return;
   }
-
+fetch("https://donoclothes-server.onrender.com/auth/logo", {
+      headers: { Authorization: "Bearer " + token },
+    })
+  .then((res) => {
+    if (!res.ok) throw new Error("Logo not found");
+    return res.blob();
+  })
+  .then((blob) => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById("logoImg").src = url;
+  })
+  .catch((err) => {
+    console.error("Failed to load logo:", err);
+  });
     try {
     const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
@@ -1088,7 +1164,7 @@ async function searchDonations(query, token) {
 
 
 //// clothesReqDetails.html js
-document.addEventListener("DOMContentLoaded", async () => {
+/*document.addEventListener("DOMContentLoaded", async () => {
   const token = new URLSearchParams(window.location.search).get("token");
   console.log(token);
   if (!token) {
@@ -1133,7 +1209,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.warn("Failed to load user photo:", err);
   }
 
-});
+});*/
 
 async function runAddItemToStorageLogic(){
     const params= new URLSearchParams(window.location.search);
@@ -1143,7 +1219,20 @@ async function runAddItemToStorageLogic(){
     window.location.href="index.html";
     return;
   }
-
+fetch("https://donoclothes-server.onrender.com/auth/logo", {
+      headers: { Authorization: "Bearer " + token },
+    })
+  .then((res) => {
+    if (!res.ok) throw new Error("Logo not found");
+    return res.blob();
+  })
+  .then((blob) => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById("logoImg").src = url;
+  })
+  .catch((err) => {
+    console.error("Failed to load logo:", err);
+  });
     try {
     const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
@@ -1339,7 +1428,20 @@ async function runClothesReqHistoryPageLogic(){
     window.location.href="index.html";
     return;
   }
-
+fetch("https://donoclothes-server.onrender.com/auth/logo", {
+      headers: { Authorization: "Bearer " + token },
+    })
+  .then((res) => {
+    if (!res.ok) throw new Error("Logo not found");
+    return res.blob();
+  })
+  .then((blob) => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById("logoImg").src = url;
+  })
+  .catch((err) => {
+    console.error("Failed to load logo:", err);
+  });
     try {
     const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
