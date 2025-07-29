@@ -67,6 +67,8 @@ loginForm.addEventListener("submit", async (e) => {
     }
 const donationInput = document.getElementById("donationSearchInput");
 const clothesInput = document.getElementById("clothesSearchInput");
+   loadStorageShortage(token);
+
 fetch("https://donoclothes-server.onrender.com/auth/logo", {
       headers: { Authorization: "Bearer " + token },
     })
@@ -201,6 +203,37 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+async function loadStorageShortage(token) {
+  try {
+    const res = await fetch("https://donoclothes-server.onrender.com/auth/worker/storage/shortage", {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    });
+
+    const shortages = await res.json();
+console.log("ss");
+    const shortageList = document.querySelector(".shortage ul");
+    if (!shortageList) return;
+console.log("info");
+    shortageList.innerHTML = "";
+
+    if (shortages.length === 0) {
+      shortageList.innerHTML = "<li>No recent shortages.</li>";
+      return;
+    }
+
+    shortages.forEach(item => {
+      const li = document.createElement("li");
+      const info = item._id;
+      li.textContent = `${info.type}, ${info.gender}, size ${info.size}, ${info.color}, ${info.classification} — ${item.count} in stock`;
+      shortageList.appendChild(li);
+      
+    });
+  } catch (err) {
+    console.error("Error fetching storage shortages:", err);
+  }
+}
 
 
 async function runClothesRequestDetailsLogic() {
@@ -301,7 +334,7 @@ fetch("https://donoclothes-server.onrender.com/auth/logo", {
         <p>✉️ Email: ${recipient.email || 'N/A'}</p>
         <p>Age: ${recipient.age}</p>
         <p>Kids: ${recipient.kids}</p>
-        <p>Normal clothes request for: ${request.gender}, age ${request.age}</p>
+<p id="normalRequestInfo">Normal clothes request for: ...</p>
         <p>Address: ${recipient.address}</p>
       </div>
 <div class="request-history" id="requestHistoryBtn" style="cursor: pointer;">🔄 Requests History</div>
@@ -324,13 +357,36 @@ fetch("https://donoclothes-server.onrender.com/auth/logo", {
           console.warn("Failed to load donation photo", err);
           recipientphoto.src = "placeholder-image.jpg";
         });
+const id=recipientId;
+console.log(id);
+try {
+  const commonRes = await fetch(`https://donoclothes-server.onrender.com/auth/worker/clothes-requests/${id}/common`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (commonRes.ok) {
+    const common = await commonRes.json();
+    console.log(common);
+document.getElementById("normalRequestInfo").textContent = 
+  `Normal clothes request for:${common.gender}, size ${common.size}`;
+
+  } else {
+    document.getElementById("normalRequestInfo").textContent = 
+      `Normal clothes request for: not enough data`;
+  }
+} catch (err) {
+  console.warn("Failed to fetch normal request info", err);
+}
+
+
+
+
     }
   } catch (err) {
     console.error("Error loading request:", err);
     alert("Could not load request details");
     return;
   }
-
   // Event listeners
   const checkBtn = document.getElementById("checkbtn");
   const saveBtn = document.getElementById("savebtn");
@@ -776,11 +832,6 @@ async function renderBranch(branch,token){
       </div>
       <div class="quantity">
          <p id="countitems">Quantity in storage: <strong>Loading...</strong></p>
-      </div>
-      <div class="shortage">
-        <p><strong>Recent shortage in storage:</strong></p>
-        <ul>
-        </ul>
       </div>
     `;
 

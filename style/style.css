@@ -555,6 +555,10 @@ main {
 }
 
 
+ul.request-shortage-list {
+  list-style-type: none;
+  padding-left: 0;
+}
 
 
 
