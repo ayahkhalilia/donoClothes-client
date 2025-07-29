@@ -27,19 +27,19 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #cce1f7;
+  background: #B3D1FF;
   padding: 10px 20px;
 
 }
 
-.header {
+/*.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #cce1f7;
+  background: #B3D1FF;
   padding: 10px 20px;
 
-}
+}*/
 
 .logo {
       display: flex;
@@ -57,57 +57,157 @@ header {
   align-items: center;
   gap: 10px;
 }
-
-.userPhoto{
-    width: 40px;
-  height: 40px;
+#welcomeMsg{
+  font-size: 24px;
 }
 
-.user-profile img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+#userPhoto{
+width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #333; display: block;
+}
+
+#userInfo {
+  display: flex;
+  align-items: center; 
+  gap: 10px; 
+}
+
+#pagename{
+  padding-top: 10px;
+  padding-left: 35px;
 }
 
 main {
   display: flex;
-  gap: 20px;
+  gap: 55px;
+  padding-top: 50px;
+  padding-left: 55px;
 }
 
 /* Left Panel */
-#branch-info {
-  background: #e9f3fc;
-  padding: 20px;
-  border-radius: 12px;
-  width: 25%;
+#branchPhoto {
+  position: absolute;
+  top: -40px; /* move half of its height up */
+
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+  z-index: 2;
+  margin-top: 230px;
+
+}
+#branch-t{
+    background-color: #B3D1FF;
+    border-radius: 12px;
   box-shadow: 0 0 8px #ccc;
+    width: 344px;
+  height: 480px;
+
+}
+#branch-info{
+
+  text-align: center;
+margin-top: 30px;
+}
+#branch-info .contact {
+  margin: 20px 0 10px;
+  /*text-align: center;*/
+  padding: 0 10px;
 }
 
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.branchname{
+  padding-top: 70px;
+  
+}
+
+.contact-item {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  font-weight: 500;
+  color: #333;
+}
+
+.email-line {
+  font-size: 14px;
+  color: #333;
+  word-break: break-word;
+  text-align: center;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+
+/* Quantity in storage */
+#branch-info .quantity {
+  font-size: 15px;
+  color: #1f1f1f;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Shortage box (already partially styled) */
 #branch-info .shortage {
-  background: #ffdcdc;
-  padding: 10px;
+  background: white;
+ border: 2px solid #ff0000;
+ padding-left: 50px;  
+  padding: 12px;
   margin: 10px 0;
   border-radius: 8px;
-  font-size: 14px;
+color: #ff0000;
+  width: 266px;
+  height: 160px;
+margin-left: 35px;
 }
 
-#branch-info button {
+#branch-info .shortage ul {
+  padding-left: 10px;
+    font-size: 13px;
+  color: #ff0000;
+  text-align: left;
+
+}
+
+/* Check storage button */
+#checkStorageBtn {
   background: #1677c5;
   color: white;
   border: none;
-  padding: 10px;
-  width: 100%;
-  border-radius: 6px;
+  padding: 10px 15px;
+  width: 208px;
+  height: 38px;
+
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 15px;
   margin-top: 10px;
+  transition: background 0.3s ease;
+  margin-left: 65px;
 }
+
+#checkStorageBtn:hover {
+  background: #0f5fa2;
+}
+
 
 /* Center & Right Panels */
 .requests-panel {
-  background: #d5e9ff;
-  padding: 20px;
+  background: #B3D1FF;
+  padding: 2px;
   border-radius: 12px;
-  width: 37%;
+  width: 394px;
   box-shadow: 0 0 8px #ccc;
   overflow-y: auto;
   max-height: 80vh;
@@ -118,11 +218,12 @@ main {
 }
 
 .requests-panel input[type="search"] {
-  width: 100%;
+  width: 290px;
   padding: 8px;
-  border-radius: 6px;
+  border-radius: 12px;
   border: 1px solid #ccc;
   margin-bottom: 15px;
+  margin-left: 48px;
 }
 
 .request-list {
@@ -132,9 +233,9 @@ main {
 .request-list li {
   background: white;
   padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  margin-bottom: 2px;
 }
+
 
 /* With Photos */
 .with-photos li {
@@ -153,8 +254,15 @@ main {
   line-height: 1.2;
 }
 
+#donationlisttitle {
+text-align: center;
+margin-top: 6px;
+}
 
-
+#clothesreqlistdetails{
+  text-align: center;
+  margin-top: 6px;
+}
 
 /* clothesReqDetails */
 

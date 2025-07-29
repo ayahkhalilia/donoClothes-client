@@ -15,56 +15,49 @@
     </div>
     <section id="userInfo">
 <div id="userDropdown" class="dropdown">
-  <h2 id="welcomeMsg">Welcome, [User] ▼</h2>
+  <h2 id="welcomeMsg"></h2>
   <div id="dropdownMenu" class="dropdown-menu hidden">
     <button id="logoutBtn">Logout</button>
   </div>
 </div>
-      <img id="userPhoto" alt="User Photo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #333; display: block;" /> 
+      <img id="userPhoto" alt="User Photo" /> 
     </section>
   </header>
 
 
-
+<h2 id="pagename">Home</h2>
   <main>
     <!-- Left Side: Branch Info -->
+     
     <section id="branch-info">
         <img
     id="branchPhoto"
     alt="Branch Photo"
-    style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover;"
-  />
-      <!--<h3>Haifa Branch</h3>
-      <p>Street HaAsif 17</p>-->
+"
+  /><div id="branch-t">
+
       <div class="contact">
-        <!--<p><strong>📍 Location</strong></p>
-        <p><strong>📞 03-5576000</strong></p>
-        <p><strong>💬 WhatsApp</strong></p>
-        <p>📧Email OpenHeart.Donation@gmail.com</p>i need to change this later-->
-      </div>
-      <!--<div class="quantity">
-        <p>Quantity in storage: <strong>538/1200</strong></p>
-      </div>      <button>Check storage</button>-->
+     </div>
 
 <div class="shortage">
   <p><strong>Recent shortage in storage:</strong></p>
   <ul class="request-shortage-list" id="shortageList"></ul>
 </div>
             <button id="checkStorageBtn">Check storage</button>
-
+</div>
     </section>
 
     <!-- Middle Panel: Donations Requests -->
     <section id="donationRequests" class="requests-panel">
-      <h3>Donations Requests</h3>
+      <h3 id="donationlisttitle">Donations Requests</h3>
       <input id="donationSearchInput" type="search" placeholder="Search..." />
-      <ul class="request-list">        
+      <ul class="request-list with-photos">        
       </ul>
     </section>
 
     <!-- Right Panel: Clothes Requests -->
     <section id="clothesRequests" class="requests-panel">
-      <h3>Clothes Requests</h3>
+      <h3 id="clothesreqlistdetails">Clothes Requests</h3>
       <input id="clothesSearchInput" type="search" placeholder="Search..." />
       <ul class="request-list with-photos">
 
