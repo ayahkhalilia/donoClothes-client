@@ -759,7 +759,7 @@ if (stats.pendingRequests.length > 0) {
 
     const reqs = await resp.json();
     const donatorId = reqs.donator?._id || reqs.donator;
-    const donrphoto=document.getElementById("donerPhoto");
+    const donrphoto=document.getElementById("recipientPhoto");
 
     if (donatorId) {
       fetch(`https://donoclothes-server.onrender.com/auth/worker/donation-request/${donatorId}/photo`, {
