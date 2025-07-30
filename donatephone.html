@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style/stylephone.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="script/auth.js" defer></script>
-<script src="script/navigation.js" defer></script>
+  <script src="script/navigation.js" defer></script>
 </head>
 <body>
 
@@ -23,25 +23,25 @@
     <h2 class="page-title">Currently needed</h2>
 
     <div class="request-list">
-      <div class="request-card">
+      <div class="request-card" data-request="dresses-for-girls">
         <span>dresses for girls</span>
-        <button class="donate-btn">Donate</button>
+        <button class="donate-btn" onclick="goToDonationPage('dresses-for-girls')">Donate</button>
       </div>
-      <div class="request-card">
+      <div class="request-card" data-request="boys-clothes">
         <span>boys clothes</span>
-        <button class="donate-btn">Donate</button>
+        <button class="donate-btn" onclick="goToDonationPage('boys-clothes')">Donate</button>
       </div>
-      <div class="request-card">
+      <div class="request-card" data-request="work-clothes">
         <span>work clothes</span>
-        <button class="donate-btn">Donate</button>
+        <button class="donate-btn" onclick="goToDonationPage('work-clothes')">Donate</button>
       </div>
-      <div class="request-card">
+      <div class="request-card" data-request="dresses-for-women">
         <span>dresses for women</span>
-        <button class="donate-btn">Donate</button>
+        <button class="donate-btn" onclick="goToDonationPage('dresses-for-women')">Donate</button>
       </div>
-      <div class="request-card">
+      <div class="request-card" data-request="work-clothes">
         <span>work clothes</span>
-        <button class="donate-btn">Donate</button>
+        <button class="donate-btn" onclick="goToDonationPage('work-clothes')">Donate</button>
       </div>
     </div>
 
@@ -72,6 +72,7 @@
   </aside>
 
   <script src="script/sidebar.js"></script>
-<script src="script/donatephone.js" defer></script>
+  <script src="script/donate.js"></script>
 </body>
 </html>
+
