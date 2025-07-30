@@ -20,7 +20,7 @@ function navigate(page) {
     case 'home':     base = homeRouteByRole();      break;
     case 'donate':   base = 'donatephone.html';     break;
     case 'history':  base = 'historyphone.html';    break;
-    case 'requests': base = 'requestsphone.html';   break;
+    case 'requests': base = 'donationform.html';   break;
     default:         base = homeRouteByRole();
   }
   window.location.href = withToken(base);
