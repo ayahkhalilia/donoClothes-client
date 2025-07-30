@@ -6,17 +6,14 @@
   <title>Donate Items</title>
   <link rel="stylesheet" href="style/stylephone.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <script>
-    if (!sessionStorage.getItem("token")) {
-      window.location.href = "index.html";
-    }
-  </script>
+  <script src="script/auth.js" defer></script>
+<script src="script/navigation.js" defer></script>
 </head>
 <body>
 
   <header>
     <div class="logo">
-<img id="logoImg" alt="Logo" />
+      <img src="logo.png" alt="logo" />
       <span>DonoClothes</span>
     </div>
     <div class="menu-icon" onclick="toggleSidebar()">☰</div>
@@ -75,5 +72,6 @@
   </aside>
 
   <script src="script/sidebar.js"></script>
+<script src="script/donatephone.js" defer></script>
 </body>
 </html>
