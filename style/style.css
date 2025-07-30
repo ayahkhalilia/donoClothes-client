@@ -376,7 +376,7 @@ margin-top: 6px;
     }
 
 
-.accept-btn{
+/*.accept-btn{
   width: 80px;
   height: 30px;
 }
@@ -389,7 +389,7 @@ margin-top: 6px;
 #onwait{
   color: red;
   font-size: 14px;
-}
+}*/
 
 /*this is for the logout button and down menu window*/
 .dropdown {
@@ -669,4 +669,266 @@ ul.request-shortage-list {
 }
 
 
+/*donationreqdetails page*/
+.donation-details-layout {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
 
+#ddoner-info{
+
+  text-align: center;
+margin-top: 30px;
+}
+
+/* === DONATOR CARD === */
+/* Card Container */
+.donator-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* space between info and buttons */
+  align-items: center;
+  background-color: #B3D1FF;
+  border-radius: 12px;
+  box-shadow: 0 0 8px #ccc;
+  width: 344px;
+  height: 480px;
+  text-align: center;
+  padding: 20px 10px;
+  position: relative;
+  overflow: hidden; 
+  margin-top: 20px;
+}
+
+/* Image floating above the card */
+#recipientPhoto {
+  position: absolute;
+  top: -40px;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+  z-index: 2;
+  left: 50%;
+  margin-top: 230px;
+  margin-left: -490px;
+  border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;
+}
+
+#donerPhoto{
+    position: absolute;
+  top: -40px;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+  z-index: 2;
+  left: 50%;
+  margin-top: 230px;
+  margin-left: -490px;
+  border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;
+}
+.donname{
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+/* Donator Info inside the card */
+.donator-card .info2 {
+  padding-top: 30px;
+}
+
+/* Contact details inside */
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.contact-item {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  font-weight: 500;
+  color: #333;
+}
+
+.email-line {
+  font-size: 14px;
+  color: #333;
+  word-break: break-word;
+  text-align: center;
+  padding-bottom: 10px;
+  padding-top: 6px;
+}
+
+/* Donation count */
+.donator-card .quantity {
+  font-size: 15px;
+  color: #1f1f1f;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+
+.donationcount{
+  margin-bottom: 100px;
+}
+/* Pending Requests box */
+#statuslist{
+    width: 266px;
+  height: 129px;
+    background: white;
+      padding: 12px;
+  border-radius: 8px;
+    text-align: left;
+  font-size: 16px;
+  margin-bottom: 90px;
+}
+
+/*#donatephone{
+  margin-bottom: 50px;
+}*/
+#statuslist ul{
+  list-style: none;
+}
+
+#statuslist li{
+  margin-top: 10px;
+}
+
+#onwait {
+  color: #ff0000;
+  margin-top: -22px;
+  margin-left: 200px;
+  text-align: left;
+  font-size: 13px;
+}
+
+#donreqbtns{
+  margin-top: -100px;
+}
+
+/* Buttons */
+.accept-btn, .decline-btn {
+  width: 208px;
+  height: 38px;
+  font-size: 15px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  margin: 8px 0;
+  display: block;
+}
+
+.accept-btn {
+  background-color: #34c759;
+  color: white;
+}
+
+.decline-btn {
+  background-color: #ff3b30;
+  color: white;
+}
+
+/* === REQUEST DETAILS === */
+.request-details {
+  background-color: #aed2ff;
+  padding: 25px;
+  border-radius: 20px;
+  width: 394px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  height: 532px;
+}
+
+.request-details h3 {
+  text-align: center;
+  font-size: 20px;
+  color: #111;
+  margin-bottom: 15px;
+}
+
+#requestDetails{
+    display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 20px 20px; /* space between rows and columns */
+  margin-bottom: 20px;
+  margin-top: 55px;
+}
+
+#requestDetails p {
+  font-size: 20px;
+  margin:  0;
+  color: #333;
+  margin-top: 10px;
+}
+
+#photoGallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+#photoGallery img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 70px;
+}
+
+
+
+/* === PICKUP SCHEDULE === */
+.pickup-schedule {
+  background-color: #aed2ff;
+  padding: 20px;
+  border-radius: 20px;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-top: 50px;
+  width: 360px;
+  height: 297px;
+}
+
+.pickup-schedule h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #111;
+  margin-top: 30%;
+}
+
+.pickup-schedule select {
+  padding: 8px;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-size: 14px;
+  width: 100%;
+}
+
+.pickup-schedule button {
+  background-color: #1677c5;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 5px;
+  width: 100%;
+}
+
+.pickup-schedule button:hover {
+  background-color: #0f5fa2;
+}

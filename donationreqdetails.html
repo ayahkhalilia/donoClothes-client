@@ -22,19 +22,28 @@
       <img id="userPhoto" alt="User Photo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #333; display: block;" /> 
     </section>
   </header>
+<h2 id="pagename">Donation request</h2>
 
   <main class="donation-details-layout">
-    <div>
-    <div class="donator-card">
-      <h3 id="donator"></h3>
-    </div>
-      <button class="accept-btn">Accept</button>
-      <button class="decline-btn">Decline</button>
-    </div>
+    <section id="ddoner-info">
+      <img id="donerPhoto" alt="recipient Photo"/>
+     <div class="donator-card">
+       <div class="info2">
+         <h3 id="donator"></h3>
+       </div>
+       <div id="scounter"></div>
+       <div id="statuslist"></div>
+       <div id="donreqbtns">
+       <button class="accept-btn">Accept</button>
+       <button class="decline-btn">Decline</button>
+       </div>
+     </div> 
+    </section>
 
     <section class="request-details">
       <h3>Request Details</h3>
       <div id="requestDetails"></div>
+      <div id="photoGallery"></div>
     </section>
 
     <section class="pickup-schedule">
