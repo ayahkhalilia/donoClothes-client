@@ -223,7 +223,7 @@ margin-left: 35px;
   width: 394px;
   box-shadow: 0 0 8px #ccc;
   overflow-y: auto;
-  max-height: 80vh;
+  max-height: 530px;
 }
 
 .requests-panel h3 {

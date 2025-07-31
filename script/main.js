@@ -379,7 +379,7 @@ try {
     const common = await commonRes.json();
     console.log(common);
 document.getElementById("normalRequestInfo").textContent = 
-  `${common.gender}, size ${common.size}`;
+  `gender:${common.gender}, size: ${common.size}`;
 
   } else {
     document.getElementById("normalRequestInfo").textContent = 
