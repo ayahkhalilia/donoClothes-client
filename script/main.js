@@ -535,7 +535,7 @@ storageBox.appendChild(card);
         alert("Items marked as donated!");
         window.location.href = "homepage.html?token=" + encodeURIComponent(token);
         selectedItems = [];
-        checkBtn.click(); // re-check storage
+        checkBtn.click(); 
       } else {
         alert("Failed to update items");
       }
