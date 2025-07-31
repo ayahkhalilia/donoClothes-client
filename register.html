@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register Test</title>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <link rel="stylesheet" href="style/style.css">
+  <script src="script/main.js" defer></script>
 </head>
-<body>
-  <h2>Test Registration</h2>
+<body class="register-body">
+  <h2 class="register-heading">Registration</h2>
   <form id="registerForm" enctype="multipart/form-data">
     <input type="text" name="username" placeholder="Username" required><br>
     <input type="password" name="password" placeholder="Password" required><br>
@@ -37,6 +40,7 @@
       if (res.ok) {
         alert('Registered successfully!');
         console.log('User created:', data);
+        window.location.href = "index.html";
       } else {
         alert('Failed: ' + (data.error || 'Unknown error'));
       }

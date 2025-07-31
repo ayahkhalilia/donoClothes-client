@@ -38,7 +38,7 @@ loginForm.addEventListener("submit", async (e) => {
         targetPage = "homepage.html";
         break;
       case "donator":
-        targetPage = "homepageiphone.html";
+        targetPage = "donerhome.html";
         break;
       case "recipient":
         targetPage = "#"; // do i need to put the third user?
@@ -162,27 +162,11 @@ clothesInput?.addEventListener("input", () => {
   if (path.endsWith("clothesreqhistory.html")) {
     runClothesReqHistoryPageLogic();
   }
-    if (path.endsWith("homepageiphone.html")) {
-    runjs();
-  }
-  if(path.endsWith("donatephone.html")) {
+  if (path.endsWith("donerhome.html")) {
+    runDonetorHomePageLogic();
   }
 });
 
-
-async function runjs() {
-
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    console.log(token);
-  const donatebtn=document.getElementById("donatebtn");
-      donatebtn.addEventListener("click", async () => {
-
-                    window.location.href = `donatephone.html?token=${encodeURIComponent(token)}`;
-
-
-    });
-}
 
 
 
@@ -324,14 +308,13 @@ fetch("https://donoclothes-server.onrender.com/auth/logo", {
 
     const classificationDiv = document.getElementById("classification");
     classificationDiv.innerHTML = `
-      <h4>Request Info</h4>
-      <p><strong>Recipient:</strong> <span>${request.recipient?.username || 'Unknown'}</span></p>
-      <p><strong>Gender:</strong> <span id="req-gender">${request.gender}</span></p>
-      <p><strong>Age:</strong> <span id="req-age">${request.age}</span></p>
-      <p><strong>Type:</strong> <span id="req-type">${request.type}</span></p>
-      <p><strong>Size:</strong> <span id="req-size">${request.size}</span></p>
-      <p><strong>Color:</strong> <span id="req-color">${request.color}</span></p>
-      <p><strong>Classification:</strong> <span id="req-classification">${request.classification}</span></p>
+      <h4 id="req-info">Request Info</h4>
+      <p><div id="recipname"><strong>Gender:</strong></div> <div id="req-details">${request.gender}</div></p>
+      <p><div id="recipname"><strong>Age:</strong></div> <div id="req-details">${request.age}</div></p>
+      <p><div id="recipname"><strong>Type:</strong></div> <div id="req-details">${request.type}</div></p>
+      <p><div id="recipname"><strong>Size:</strong></div> <div id="req-details">${request.size}</div></p>
+      <p><div id="recipname"><strong>Color:</strong></div> <div id="req-details">${request.color}</div></p>
+      <p><div id="recipname"><strong>Classification:</strong></div> <div id="req-details">${request.classification}</div></p>
     `;
 
     const recipientId = request.recipient?._id;
@@ -346,21 +329,30 @@ fetch("https://donoclothes-server.onrender.com/auth/logo", {
     const recipient = await userRes.json();
 
     document.querySelector(".profile-card").innerHTML = `
-      <h3>${recipient.username}</h3>
-      <p>${recipient.city || ''}</p>
-      <div class="info">
-        <p>📞 Phone: ${recipient.phonenumber}</p>
-        <p>✉️ Email: ${recipient.email || 'N/A'}</p>
-        <p>Age: ${recipient.age}</p>
-        <p>Kids: ${recipient.kids}</p>
-<p id="normalRequestInfo">Normal clothes request for: ...</p>
-        <p>Address: ${recipient.address}</p>
+    <div class="donernameplace"> 
+      <h3 >${recipient.username}</h3>
+    </div>
+      <div class="contact">
+        <div class="contact-row1">
+         <div class="contact-item"><i class="fab fa-facebook-messenger"></i></div>
+         <div class="contact-item"><i class="bi bi-telephone-fill"></i></div>
+         <div class="contact-item"><i class="fab fa-whatsapp"></i></div>
+        </div>
+      <div class="contact-row">
+        <div class="contact-item"></i>Messanger</div>
+       <div class="contact-item"></i>${recipient.phonenumber}</div>
+       <div class="contact-item"></i>WhatsApp</div>
+      </div> 
+       <div class="email-line1">Email: ${recipient.email}</div> 
+        <div id="reciage">Age:<div id="whiterecreciage"> <p>${recipient.age}</p></div></div>
+        <div id="reciage">Kids:<div id="whiterecrecikids"><p>${recipient.kids}</p></div></div>
+<div id="whiterecreciclothes">Normal clothes request for:<p id="normalRequestInfo"></p> </div>
+        <div id="addressdiv">Address:<div id="whiterecreciaddr">${recipient.address}</div></div>
       </div>
-<div class="request-history" id="requestHistoryBtn" style="cursor: pointer;">🔄 Requests History</div>
+<div class="request-history" id="requestHistoryBtn" style="cursor: pointer;"><i class="bi bi-clock-history"></i> Requests History</div>
     `;
     console.log(recipientId);
     const recipientphoto=document.getElementById("recipientphoto");
-    recipientphoto.style.cssText = "width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;";
     if(recipientId){
       fetch(`https://donoclothes-server.onrender.com/auth/worker/clothes-requests/${recipientId}/photo`, {
         headers: { Authorization: "Bearer " + token }
@@ -387,7 +379,7 @@ try {
     const common = await commonRes.json();
     console.log(common);
 document.getElementById("normalRequestInfo").textContent = 
-  `Normal clothes request for:${common.gender}, size ${common.size}`;
+  `${common.gender}, size ${common.size}`;
 
   } else {
     document.getElementById("normalRequestInfo").textContent = 
@@ -465,7 +457,7 @@ checkBtn.addEventListener("click", async () => {
 
 
 const img = document.createElement('img');
-img.style.cssText = "width:100px; height:100px; object-fit:cover; border-radius:10px; margin-bottom:10px;";
+img.style.cssText = "width:100px; height:100px; object-fit:cover; border-radius:10px; margin-bottom:10px; margin-left:30px;";
 img.alt = "Storage Item Photo";
 
 // Load first photo
@@ -493,9 +485,9 @@ details.innerHTML = `
         <p><strong>Status:</strong> ${item.status}</p>
         <button class="select-btn" data-id="${item._id}">Select</button>
       `;
+details.style.marginLeft="30px";
 card.appendChild(details);
-
-      storageBox.appendChild(card);
+storageBox.appendChild(card);
     });
 
     document.querySelectorAll(".select-btn").forEach(btn => {
@@ -704,11 +696,16 @@ for (let i = 0; i < photoCount; i++) {
     const donator=await donerRes.json();
     document.querySelector(".info2").innerHTML=`
        <div class="donname">${donator.username}</div>
-       <div class="contact">
+       <div class="contact1">
+             <div class="contact-row1">
+         <div class="contact-item"><i class="fab fa-facebook-messenger"></i></div>
+         <div class="contact-item"><i class="bi bi-telephone-fill"></i></div>
+        <div class="contact-item"><i class="fab fa-whatsapp"></i></div>
+      </div>
        <div class="contact-row">
-       <div class="contact-item">Messanger</div>
-       <div class="contact-item">${donator.phonenumber}</div>
-       <div class="contact-item">WhatsApp</div>
+       <div class="contact-item"></i>Messanger</div>
+       <div class="contact-item"></i>${donator.phonenumber}</div>
+       <div class="contact-item"></i>WhatsApp</div>
        </div>
        <div class="email-line">Email: ${donator.email}</div> 
        
@@ -837,10 +834,15 @@ async function renderBranch(branch,token){
       <p>${branch.address}</p>
       </div>
       <div class="contact">
+      <div class="contact-row1">
+         <div class="contact-item"> <i class="bi bi-geo-alt-fill"></i></div>
+         <div class="contact-item"> <i class="bi bi-telephone-fill"></i></div>
+        <div class="contact-item">  <i class="fab fa-whatsapp"></i></div>
+      </div>
        <div class="contact-row">
-        <div class="contact-item"><strong>📍 Location</strong></div>
-        <div class="contact-item"><strong>📞 ${branch.phonenumber}</strong></div>
-        <div class="contact-item"><strong>💬 WhatsApp</strong></div>
+        <div class="contact-item"><strong> Location</strong></div>
+        <div class="contact-item"><strong>${branch.phonenumber}</strong></div>
+        <div class="contact-item"><strong>WhatsApp</strong></div>
        </div>
         <div class="email-line">📧 ${branch.email}</div>
       </div>
@@ -1364,12 +1366,27 @@ fetch("https://donoclothes-server.onrender.com/auth/logo", {
 async function runDonetorHomePageLogic(){
     const params= new URLSearchParams(window.location.search);
   const token=params.get("token");
+let userId;
   if(!token){
     alert("Missing token. Please log in first.");
     window.location.href="index.html";
     return;
   }
-
+  
+  fetch("https://donoclothes-server.onrender.com/auth/logo", {
+      headers: { Authorization: "Bearer " + token },
+    })
+  .then((res) => {
+    if (!res.ok) throw new Error("Logo not found");
+    return res.blob();
+  })
+  .then((blob) => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById("logoImg").src = url;
+  })
+  .catch((err) => {
+    console.error("Failed to load logo:", err);
+  });
     try {
     const userRes = await fetch("https://donoclothes-server.onrender.com/auth/me", {
       headers: { Authorization: "Bearer " + token },
@@ -1380,7 +1397,7 @@ async function runDonetorHomePageLogic(){
     const user = await userRes.json();
     const welcomeEl = document.getElementById("welcomeMsg");
     if (welcomeEl) welcomeEl.textContent = `Hi, ${user.username}`;
-    const userId=user._id;
+    userId = user._id;
     console.log(userId);
   } catch (err) {
     console.error("Error fetching user info:", err);
@@ -1428,7 +1445,13 @@ pickupDates.forEach(date => formData.append("availablePickupDates[]", date));
     }
 
     const result = await res.json();
-    alert("Donation request submitted!");
+    Swal.fire({
+       icon: 'success',
+       title: 'Thank you!',
+       text: 'Your donation request was submitted successfully.',
+       confirmButtonColor: '#3085d6'
+    });
+
     form.reset();
   } catch (err) {
     alert("Error: " + err.message);
@@ -1437,39 +1460,59 @@ pickupDates.forEach(date => formData.append("availablePickupDates[]", date));
 });
   const alertBell = document.getElementById("alertBell");
   const alertPopup = document.getElementById("alertPopup");
-  const alertList = document.getElementById("alertList");
   const unreadMark = document.getElementById("unreadMark");
   alertBell.addEventListener("click", async () => {
       console.log("Bell clicked");
 
   alertPopup.classList.toggle("hidden");
-
+console.log(userId);
   if (!alertPopup.classList.contains("hidden")) {
-    await fetch(`https://donoclothes-server.onrender.com/mark-read/${userId}`, {
-      method: "PUT"
-    });
+    await fetch(`https://donoclothes-server.onrender.com/auth/mark-read/${userId}`, {
+      method: "PUT",
+      headers: {
+      Authorization: "Bearer " + token
+    }
+  });
     unreadMark.classList.add("hidden");
   }
   console.log(userId)
 });
-loadAlerts(userId);
-setInterval(() => loadAlerts(userId), 10000);
+  const userInfo = document.getElementById("userInfo");
+userInfo.insertBefore(alertBell, userInfo.firstChild);
+loadAlerts(userId,token);
+setInterval(() => loadAlerts(userId, token), 10000);
 
 }
 
-async function loadAlerts(userId) {
-  if (!userId) return;
+async function loadAlerts(userId, token) {
+  try {
+    const res = await fetch(`https://donoclothes-server.onrender.com/auth/alert-bell/${userId}`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    if (!res.ok) {
+      console.error("Failed to fetch alerts:", res.status);
+      return;
+    }
   const alertList = document.getElementById("alertList");
-  const unreadMark = document.getElementById("unreadMark");
-  const res = await fetch(`https://donoclothes-server.onrender.com/alert-bell/${userId}`);
-  const alerts = await res.json();
 
-  const unread = alerts.filter(a => !a.read);
-  unreadMark.classList.toggle("hidden", unread.length === 0);
+    const alerts = await res.json();
+    console.log("Alerts:", alerts);
 
-  alertList.innerHTML = alerts.map(alert =>
-    `<li>${alert.message}</li>`).join("");
+    // Clear previous list
+    alertList.innerHTML = "";
+    // Render alerts
+    alerts.forEach(alert => {
+      const li = document.createElement("li");
+      li.textContent = alert.message || "New alert!";
+      alertList.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Error fetching alerts:", err);
+  }
 }
+
+
 
 
 ////// pickup date function for donation requests 
@@ -1558,14 +1601,13 @@ fetch("https://donoclothes-server.onrender.com/auth/logo", {
     requests.forEach(req => {
       const card = document.createElement("div");
       card.className = "request-card";
-      card.style.cssText = "border:1px solid #ccc; padding:15px; margin:10px 0; border-radius:8px;";
-
+      card.style.cssText = `  width: 260px;  height: 260px; border: 1px solid #ccc; padding: 15px; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 0 5px rgba(0,0,0,0.1); `;
       card.innerHTML = `
-        <p><strong>Type:</strong> ${req.type}</p>
-        <p><strong>Gender:</strong> ${req.gender}</p>
-        <p><strong>Size:</strong> ${req.size}</p>
-        <p><strong>Color:</strong> ${req.color}</p>
-        <p><strong>Status:</strong> ${req.status}</p>
+        <p id="gapinhistory"><strong>Type:</strong> ${req.type}</p>
+        <p id="gapinhistory"><strong>Gender:</strong> ${req.gender}</p>
+        <p id="gapinhistory"><strong>Size:</strong> ${req.size}</p>
+        <p id="gapinhistory"><strong>Color:</strong> ${req.color}</p>
+        <p id="gapinhistory"><strong>Status:</strong> ${req.status}</p>
       `;
 
       requestsContainer.appendChild(card);

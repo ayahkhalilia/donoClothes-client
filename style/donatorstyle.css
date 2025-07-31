@@ -1,0 +1,76 @@
+/* Container form styling */
+#donationForm {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Label styling */
+#donationForm label {
+  display: block;
+  margin-top: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Inputs and selects */
+#donationForm input[type="text"],
+#donationForm input[type="number"],
+#donationForm input[type="date"],
+#donationForm input[type="file"],
+#donationForm select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+/* File input spacing */
+#donationForm input[type="file"] {
+  padding: 6px;
+  background-color: #fff;
+}
+
+/* Buttons */
+#donationForm button[type="submit"],
+#donationForm button[type="button"] {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 20px;
+  background-color: #B3D1FF;
+  border: none;
+  color: #333;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#donationForm button:hover {
+  background-color: #91baf5;
+}
+
+/* Pickup date inputs */
+#pickupDatesContainer {
+  margin-top: 16px;
+}
+
+.pickup-date {
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+/* Responsive (optional) */
+@media (max-width: 600px) {
+  #donationForm {
+    padding: 16px;
+  }
+}
